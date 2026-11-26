@@ -36,13 +36,22 @@ test.describe("WCAG 2.2 AA Accessibility audits", () => {
     await assertClean("Ask HI Dark");
 
     if (testInfo.project.name === "mobile-360") {
-      await page.getByRole("button", { name: "और" }).click();
+      await page.getByRole("button", { name: "और", exact: true }).click();
+    }
+    await page
+      .getByRole("button", { name: /यह क्या है/ })
+      .first()
+      .click();
+    await assertClean("What is this HI Dark");
+
+    if (testInfo.project.name === "mobile-360") {
+      await page.getByRole("button", { name: "और", exact: true }).click();
     }
     await page.getByRole("button", { name: /समुदाय/ }).first().click();
     await assertClean("Community HI Dark");
 
     if (testInfo.project.name === "mobile-360") {
-      await page.getByRole("button", { name: "और" }).click();
+      await page.getByRole("button", { name: "और", exact: true }).click();
     }
     await page
       .getByRole("button", { name: /प्रमाण और तथ्य/ })

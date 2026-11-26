@@ -20,7 +20,7 @@ function MoreMenuDrawer({
   if (!open) return null;
   return (
     <div className="no-print mx-4 mb-3 flex flex-wrap gap-2 rounded-md border border-divider bg-surface p-3 md:hidden">
-      {(["community", "proof", "onboarding"] as AppTab[]).map((id) => (
+      {(["what", "community", "proof", "onboarding"] as AppTab[]).map((id) => (
         <button
           key={id}
           type="button"

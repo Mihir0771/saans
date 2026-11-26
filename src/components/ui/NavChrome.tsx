@@ -5,7 +5,8 @@ import type { Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
 import type { ThemeMode } from "@/lib/storage";
 
-export type AppTab = "today" | "plan" | "lab" | "ask" | "community" | "proof" | "onboarding";
+export type AppTab =
+  "today" | "plan" | "lab" | "ask" | "what" | "community" | "proof" | "onboarding";
 
 export function BrandLogo() {
   return (
@@ -91,7 +92,7 @@ export function SidebarNav({
         <BrandLogo />
       </div>
       <nav aria-label="Primary" className="grid gap-1">
-        {[...PRIMARY_IDS, "community", "proof", "onboarding"].map((id) => {
+        {[...PRIMARY_IDS, "what", "community", "proof", "onboarding"].map((id) => {
           const tabId = id as AppTab;
           const cls =
             activeTab === tabId ? "bg-brand-soft text-brand-ink" : "text-ink-2 hover:bg-surface-2";

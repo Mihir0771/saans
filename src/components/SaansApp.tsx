@@ -62,15 +62,24 @@ function StatusBanner({
   );
 }
 
+function saveUserProfile(s: ReturnType<typeof useSaansController>, next: typeof s.profile) {
+  s.setDemoKind(false);
+  saveStoredProfile(next);
+  s.setProfile(next);
+  s.setTab("today");
+}
+
 function SaansContent({
   s,
   air,
   loadingAir,
+  autoPlayWalkthrough,
   onOpenTutorial,
 }: {
   s: ReturnType<typeof useSaansController>;
   air: AirBundle;
   loadingAir: boolean;
+  autoPlayWalkthrough: boolean;
   onOpenTutorial: () => void;
 }) {
   return (
@@ -89,15 +98,12 @@ function SaansContent({
         onShowMath={s.setMathDetail}
         onUpdateHome={s.updateHome}
         onOpenOnboarding={() => s.setTab("onboarding")}
+        onOpenAsk={() => s.setTab("ask")}
         onOpenTutorial={onOpenTutorial}
+        autoPlayWalkthrough={autoPlayWalkthrough}
         onTrySharma={s.activateSharmaDemo}
         onTryAhmedabad={s.activateAhmedabadDemo}
-        onSaveProfile={(next) => {
-          s.setDemoKind(false);
-          saveStoredProfile(next);
-          s.setProfile(next);
-          s.setTab("today");
-        }}
+        onSaveProfile={(next) => saveUserProfile(s, next)}
         onDeleteData={() => {
           clearAllStoredData();
           s.activateSharmaDemo();
@@ -116,16 +122,19 @@ function AppTutorial({
   open,
   s,
   onClose,
+  onOpenWhat,
 }: {
   open: boolean;
   s: ReturnType<typeof useSaansController>;
   onClose: (dontShow: boolean) => void;
+  onOpenWhat: (dontShow: boolean) => void;
 }) {
   return (
     <TutorialModal
       open={open}
       locale={s.profile.locale}
       onClose={onClose}
+      onPickWhat={onOpenWhat}
       onPickSharma={(d) => {
         onClose(d);
         s.activateSharmaDemo();
@@ -146,12 +155,18 @@ export function SaansApp({ initialDemo = false }: { initialDemo?: DemoKind | fal
   const s = useSaansController(initialDemo);
   const { air, loadingAir } = useAirData(s.profile, s.demoKind, s.calibratePm, s.simMean);
   const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [autoPlayWhat, setAutoPlayWhat] = useState(false);
   useEffect(() => {
     if (!loadTutorialDismissed()) setTutorialOpen(true);
   }, []);
   const closeTutorial = (dontShow: boolean) => {
     if (dontShow) saveTutorialDismissed(true);
     setTutorialOpen(false);
+  };
+  const openWhat = (dontShow: boolean) => {
+    closeTutorial(dontShow);
+    setAutoPlayWhat(true);
+    s.setTab("what");
   };
   const pmLabel = air.hours[0]?.pm25 ? `${Math.round(air.hours[0].pm25)} µg/m³` : "";
   const banner = (
@@ -178,9 +193,10 @@ export function SaansApp({ initialDemo = false }: { initialDemo?: DemoKind | fal
         s={s}
         air={air}
         loadingAir={loadingAir}
+        autoPlayWalkthrough={autoPlayWhat}
         onOpenTutorial={() => setTutorialOpen(true)}
       />
-      <AppTutorial open={tutorialOpen} s={s} onClose={closeTutorial} />
+      <AppTutorial open={tutorialOpen} s={s} onClose={closeTutorial} onOpenWhat={openWhat} />
     </AppShell>
   );
 }

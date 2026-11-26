@@ -18,6 +18,7 @@
     "plan": "Plan",
     "lab": "Home Lab",
     "ask": "Ask",
+    "what": "What is this?",
     "community": "Community",
     "proof": "Proof & Myths",
     "onboarding": "Setup"
@@ -261,7 +262,33 @@
     "dontShow": "Do not show this again",
     "back": "Back",
     "next": "Next",
-    "done": "Start exploring",
+    "done": "Watch Video Guide →",
+    "skipToApp": "Start exploring",
     "setupCity": "Search my city"
+  },
+  "what": {
+    "badge": "60 FPS Interactive Walkthrough",
+    "title": "What is Saans — & How Everything Works",
+    "subtitle": "Watch the full 60 FPS product walkthrough rendered from real live screens, or jump to any question below.",
+    "play": "Play walkthrough",
+    "pause": "Pause",
+    "replay": "Replay",
+    "voiceOn": "Voice narration: ON",
+    "voiceOff": "Voice narration: OFF",
+    "downloadWebm": "Download 60 FPS Video (.webm)",
+    "recordingWebm": "Recording 60 FPS WebM…",
+    "whyTitle": "Why I built Saans",
+    "whyBody": "A headline AQI like '340 Very Poor' never tells a family at 7 AM whether a 7-year-old child should ride an auto or metro, whether a grandmother with asthma should air out the bedroom at 2 PM, or whether a ₹1,500 DIY Corsi-Rosenthal filter beats a ₹15,000 purifier. Saans turns pollution into a per-person Breath Budget.",
+    "howEngineTitle": "How it works: Engine Computes · Gemini Narrates · Server Verifies",
+    "howEngineBody": "A zero-I/O TypeScript physics engine computes official India CPCB AQI, 24-hour indoor mass-balance trajectories (with low/central/high uncertainty bands), member breathing doses, and exact Shapley savings. Gemini only receives a signed FactSheet and writes prose using {{fact:id}} placeholders—never guessing numbers. A server guard blocks unslotted digits and unsafe advice (ozone generators, combustion sealing, child <2 masks).",
+    "howUseTitle": "How to use every screen in 60 seconds",
+    "howUseList1": "Today: Switch between family members, click any hour bar on the 24h chart, or flip between Delhi & Ahmedabad.",
+    "howUseList2": "Plan: Scrub the cumulative dose curves and toggle actions on/off to see exact rupee & dose savings + .ics export.",
+    "howUseList3": "Home Lab: Simulate room size, window seal & CADR, find your smart ventilation window, or scan a purifier label.",
+    "howUseList4": "Setup & Ask: Search any live city globally, optionally paste your own Gemini API key (browser-only, zero server storage), and ask questions in English or Hindi.",
+    "tryDelhiBtn": "Try Delhi Demo",
+    "tryAhmBtn": "Try Ahmedabad Demo",
+    "tryAskBtn": "Open Ask Saans",
+    "trySetupBtn": "Configure City / Key"
   }
 }

@@ -9,6 +9,7 @@ interface TutorialModalProps {
   open: boolean;
   locale: Locale;
   onClose: (dontShowAgain: boolean) => void;
+  onPickWhat: (dontShowAgain: boolean) => void;
   onPickSharma: (dontShowAgain: boolean) => void;
   onPickAhmedabad: (dontShowAgain: boolean) => void;
   onPickCity: (dontShowAgain: boolean) => void;
@@ -60,16 +61,47 @@ function Step4Actions({
   );
 }
 
-function TutorialFooter({
+function TutorialNavButtons({
   step,
   total,
   locale,
-  dontShow,
-  onToggleDontShow,
   onPrev,
   onNext,
-  onDone,
+  onWatchVideo,
+  onSkip,
 }: {
+  step: number;
+  total: number;
+  locale: Locale;
+  onPrev: () => void;
+  onNext: () => void;
+  onWatchVideo: () => void;
+  onSkip: () => void;
+}) {
+  const isLast = step === total - 1;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <StepDots step={step} total={total} />
+      <div className="flex flex-wrap items-center gap-2">
+        {step > 0 ? <Button onClick={onPrev}>{t(locale, "tutorial.back")}</Button> : null}
+        {isLast ? (
+          <>
+            <Button onClick={onSkip}>{t(locale, "tutorial.skipToApp")}</Button>
+            <Button variant="primary" onClick={onWatchVideo}>
+              {t(locale, "tutorial.done")}
+            </Button>
+          </>
+        ) : (
+          <Button variant="primary" onClick={onNext}>
+            {t(locale, "tutorial.next")}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TutorialFooter(p: {
   step: number;
   total: number;
   locale: Locale;
@@ -77,35 +109,29 @@ function TutorialFooter({
   onToggleDontShow: (v: boolean) => void;
   onPrev: () => void;
   onNext: () => void;
-  onDone: () => void;
+  onWatchVideo: () => void;
+  onSkip: () => void;
 }) {
-  const isLast = step === total - 1;
   return (
     <div className="mt-4 grid gap-3 border-t border-divider pt-3">
       <label className="flex min-h-[44px] cursor-pointer items-center gap-2.5 text-sm font-medium text-ink">
         <input
           type="checkbox"
-          checked={dontShow}
-          onChange={(e) => onToggleDontShow(e.target.checked)}
+          checked={p.dontShow}
+          onChange={(e) => p.onToggleDontShow(e.target.checked)}
           className="h-5 w-5 accent-[var(--brand)]"
         />
-        <span>{t(locale, "tutorial.dontShow")}</span>
+        <span>{t(p.locale, "tutorial.dontShow")}</span>
       </label>
-      <div className="flex items-center justify-between gap-2">
-        <StepDots step={step} total={total} />
-        <div className="flex items-center gap-2">
-          {step > 0 ? <Button onClick={onPrev}>{t(locale, "tutorial.back")}</Button> : null}
-          {isLast ? (
-            <Button variant="primary" onClick={onDone}>
-              {t(locale, "tutorial.done")}
-            </Button>
-          ) : (
-            <Button variant="primary" onClick={onNext}>
-              {t(locale, "tutorial.next")}
-            </Button>
-          )}
-        </div>
-      </div>
+      <TutorialNavButtons
+        step={p.step}
+        total={p.total}
+        locale={p.locale}
+        onPrev={p.onPrev}
+        onNext={p.onNext}
+        onWatchVideo={p.onWatchVideo}
+        onSkip={p.onSkip}
+      />
     </div>
   );
 }
@@ -217,7 +243,8 @@ export function TutorialModal(p: TutorialModalProps) {
         onToggleDontShow={setDontShow}
         onPrev={() => setStep((s) => Math.max(0, s - 1))}
         onNext={() => setStep((s) => Math.min(STEP_KEYS.length - 1, s + 1))}
-        onDone={() => p.onClose(dontShow)}
+        onWatchVideo={() => p.onPickWhat(dontShow)}
+        onSkip={() => p.onClose(dontShow)}
       />
     </dialog>
   );

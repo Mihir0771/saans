@@ -87,15 +87,25 @@ test.describe("Saans E2E user journeys", () => {
       await page.screenshot({ path: "docs/build-journal/e2e-ask-hi-dark.png" });
     }
 
-    // Community + Proof tabs
+    // What is this? (60 FPS Walkthrough screen) + Community + Proof tabs
     if (testInfo.project.name === "mobile-360") {
-      await page.getByRole("button", { name: "और" }).click();
+      await page.getByRole("button", { name: "और", exact: true }).click();
+    }
+    await page
+      .getByRole("button", { name: /यह क्या है/ })
+      .first()
+      .click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(/सांस/);
+    await expect(page.locator("canvas")).toBeVisible();
+
+    if (testInfo.project.name === "mobile-360") {
+      await page.getByRole("button", { name: "और", exact: true }).click();
     }
     await page.getByRole("button", { name: /समुदाय/ }).first().click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText(/स्कूल|कार्यालय|समुदाय/);
 
     if (testInfo.project.name === "mobile-360") {
-      await page.getByRole("button", { name: "और" }).click();
+      await page.getByRole("button", { name: "और", exact: true }).click();
     }
     await page
       .getByRole("button", { name: /प्रमाण और तथ्य/ })

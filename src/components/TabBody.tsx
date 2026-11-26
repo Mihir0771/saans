@@ -10,6 +10,7 @@ import { OnboardingView } from "./screens/OnboardingView";
 import { PlanView } from "./screens/PlanView";
 import { ProofView } from "./screens/ProofView";
 import { TodayView } from "./screens/TodayView";
+import { WhatIsThisView } from "./screens/WhatIsThisView";
 import type { AppTab } from "./ui/AppShell";
 import type { MathDetail } from "./ui/MathDrawer";
 
@@ -26,7 +27,9 @@ export interface TabBodyProps {
   onShowMath: (d: MathDetail) => void;
   onUpdateHome: (patch: Partial<HouseholdProfile["home"]>) => void;
   onOpenOnboarding: () => void;
+  onOpenAsk: () => void;
   onOpenTutorial: () => void;
+  autoPlayWalkthrough?: boolean;
   onTrySharma: () => void;
   onTryAhmedabad: () => void;
   onSaveProfile: (p: HouseholdProfile) => void;
@@ -42,6 +45,17 @@ export function TabBody(p: TabBodyProps) {
   if (p.tab === "plan") return <PlanView {...p} fullPlan={fullPlan} />;
   if (p.tab === "lab") return <HomeLabView {...p} />;
   if (p.tab === "ask") return <AskView {...p} />;
+  if (p.tab === "what")
+    return (
+      <WhatIsThisView
+        locale={p.profile.locale}
+        autoPlay={p.autoPlayWalkthrough}
+        onTrySharma={p.onTrySharma}
+        onTryAhmedabad={p.onTryAhmedabad}
+        onOpenAsk={p.onOpenAsk}
+        onOpenSetup={p.onOpenOnboarding}
+      />
+    );
   if (p.tab === "community")
     return <CommunityView air={p.air} locale={p.profile.locale} cityName={p.profile.cityName} />;
   if (p.tab === "proof")
