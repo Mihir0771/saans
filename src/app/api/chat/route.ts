@@ -4,6 +4,7 @@ import { computeFullPlan } from "@/engine/plan";
 import { AirBundleSchema, HouseholdProfileSchema, LocaleSchema } from "@/engine/schema";
 import { resolveDemoInputs } from "@/lib/ahmedabad-fixture";
 import { generateGuardedChat } from "@/server/ai-service";
+import { extractUserGeminiKey } from "@/server/gemini";
 import { checkRateLimit, clientIpFromHeaders } from "@/server/ratelimit";
 
 const ChatRequestSchema = z.object({
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
     factSheet: full.factSheet,
     focusMemberId,
     locale: d.locale,
+    apiKey: extractUserGeminiKey(req.headers),
   });
 
   return NextResponse.json(result);

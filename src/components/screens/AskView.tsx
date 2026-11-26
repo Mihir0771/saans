@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { AirBundle, FactItem, HouseholdProfile, Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
+import { loadUserGeminiKey } from "@/lib/storage";
 import type { MathDetail } from "../ui/MathDrawer";
 import { Button, Card } from "../ui/Primitives";
 
@@ -132,10 +133,13 @@ function AskComposer({
 
 async function postChatMessage(body: Record<string, unknown>, locale: Locale): Promise<ChatMsg> {
   try {
+    const userKey = loadUserGeminiKey();
+    const headers: Record<string, string> = { "content-type": "application/json" };
+    if (userKey) headers["x-gemini-api-key"] = userKey;
     const data = await (
       await fetch("/api/chat", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers,
         body: JSON.stringify(body),
       })
     ).json();

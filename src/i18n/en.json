@@ -224,7 +224,14 @@
     "useSharma": "Try the Sharma family (Delhi smog day)",
     "useAhmedabad": "Try the Patel family (Ahmedabad winter day)",
     "finish": "See our Breath Budget",
-    "replayTour": "Show quick tour"
+    "replayTour": "Show quick tour",
+    "geminiTitle": "Your Gemini API Key (Optional)",
+    "geminiSub": "Bring your own key to test live Ask Saans & label scanning. Stored only in your browser; never logged or saved on the server.",
+    "geminiPlaceholder": "Paste AIza… key",
+    "geminiSave": "Save key",
+    "geminiClear": "Clear key",
+    "geminiSaved": "✓ Personal Gemini key active in this browser",
+    "geminiDefault": "Using server default or offline guidance"
   },
   "tutorial": {
     "badge": "Quick Tour",

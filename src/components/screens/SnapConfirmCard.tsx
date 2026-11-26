@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
+import { loadUserGeminiKey } from "@/lib/storage";
 import type { VisionSpecs } from "@/server/vision";
 import { Button, Card } from "../ui/Primitives";
 
@@ -44,7 +45,9 @@ function SnapPreviewForm({
 async function uploadLabelPhoto(file: File): Promise<VisionSpecs | null> {
   const fd = new FormData();
   fd.append("image", file);
-  const data = await (await fetch("/api/vision", { method: "POST", body: fd })).json();
+  const userKey = loadUserGeminiKey();
+  const headers: Record<string, string> = userKey ? { "x-gemini-api-key": userKey } : {};
+  const data = await (await fetch("/api/vision", { method: "POST", headers, body: fd })).json();
   return data.specs ?? null;
 }
 

@@ -4,6 +4,7 @@ import { computeCpcbAqi } from "@/engine/aqi";
 import { steadyStateIndoorPm } from "@/engine/indoor";
 import { computeMemberExposure } from "@/engine/exposure";
 import { sanitizeUserText } from "@/server/guard";
+import { createGeminiClient, extractUserGeminiKey } from "@/server/gemini";
 import { checkRateLimit, resetRateLimits } from "@/server/ratelimit";
 import { detectImageMime, MAX_IMAGE_BYTES } from "@/server/vision";
 import { SHARMA_DEMO_AIR, SHARMA_PROFILE } from "@/lib/sharma-fixture";
@@ -78,5 +79,17 @@ describe("Security headers, rate limits & hand-computed engine sanity", () => {
       activeActionIds: [],
     });
     expect(res.ratio).toBeGreaterThan(3);
+  });
+
+  it("validates x-gemini-api-key header safely without accepting malformed values", () => {
+    const h = (val: string | null) => ({
+      get: (name: string) => (name === "x-gemini-api-key" ? val : null),
+    });
+    expect(extractUserGeminiKey(h(null))).toBeUndefined();
+    expect(extractUserGeminiKey(h("short"))).toBeUndefined();
+    expect(extractUserGeminiKey(h("AIzaSyBad Key With Spaces 12345"))).toBeUndefined();
+    const valid = "AIzaSyExampleValidKeyFormat123456789";
+    expect(extractUserGeminiKey(h(`  ${valid}  `))).toBe(valid);
+    expect(createGeminiClient(valid)).not.toBeNull();
   });
 });

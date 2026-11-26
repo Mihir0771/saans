@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { extractUserGeminiKey } from "@/server/gemini";
 import { checkRateLimit, clientIpFromHeaders } from "@/server/ratelimit";
 import {
   analyzePurifierImage,
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const specs = await analyzePurifierImage(bytes, mime);
+    const specs = await analyzePurifierImage(bytes, mime, extractUserGeminiKey(req.headers));
     return NextResponse.json({ specs, offlineFallback: false });
   } catch {
     return NextResponse.json({ specs: offlineVisionFallback(), offlineFallback: true });

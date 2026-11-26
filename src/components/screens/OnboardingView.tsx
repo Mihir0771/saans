@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import type { HouseholdProfile } from "@/engine/schema";
+import React, { useEffect, useState } from "react";
+import type { HouseholdProfile, Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
+import { clearUserGeminiKey, loadUserGeminiKey, saveUserGeminiKey } from "@/lib/storage";
 import { Button, Card } from "../ui/Primitives";
 
 interface CityMatch {
@@ -113,6 +114,55 @@ function buildSavedProfile(profile: HouseholdProfile, selected: CityMatch): Hous
   };
 }
 
+function GeminiKeyCard({ locale }: { locale: Locale }) {
+  const [draft, setDraft] = useState("");
+  const [hasKey, setHasKey] = useState(false);
+
+  useEffect(() => {
+    setHasKey(Boolean(loadUserGeminiKey()));
+  }, []);
+
+  const onSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveUserGeminiKey(draft);
+    setHasKey(Boolean(loadUserGeminiKey()));
+    setDraft("");
+  };
+  const onClear = () => {
+    clearUserGeminiKey();
+    setHasKey(false);
+    setDraft("");
+  };
+
+  return (
+    <Card aria-labelledby="gemini-key-heading">
+      <h2 id="gemini-key-heading" className="text-lg font-bold text-ink">
+        {t(locale, "onboarding.geminiTitle")}
+      </h2>
+      <p className="mt-1 text-sm text-ink-2">{t(locale, "onboarding.geminiSub")}</p>
+      <p className="mt-2 text-xs font-bold text-brand-ink">
+        {hasKey ? t(locale, "onboarding.geminiSaved") : t(locale, "onboarding.geminiDefault")}
+      </p>
+      <form className="mt-3 flex flex-wrap gap-2" onSubmit={onSave}>
+        <input
+          type="password"
+          autoComplete="off"
+          spellCheck={false}
+          aria-label={t(locale, "onboarding.geminiTitle")}
+          placeholder={t(locale, "onboarding.geminiPlaceholder")}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          className="min-h-[44px] flex-1 rounded-sm border border-line bg-surface px-3 text-ink"
+        />
+        <Button type="submit" variant="primary" disabled={draft.trim().length < 20}>
+          {t(locale, "onboarding.geminiSave")}
+        </Button>
+        {hasKey ? <Button onClick={onClear}>{t(locale, "onboarding.geminiClear")}</Button> : null}
+      </form>
+    </Card>
+  );
+}
+
 export function OnboardingView(p: OnboardingProps) {
   const locale = p.profile.locale;
   const [cityQuery, setCityQuery] = useState(p.profile.cityName);
@@ -156,6 +206,7 @@ export function OnboardingView(p: OnboardingProps) {
           <Button onClick={p.onOpenTutorial}>{t(locale, "onboarding.replayTour")}</Button>
         </div>
       </Card>
+      <GeminiKeyCard locale={locale} />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { computeFullPlan } from "@/engine/plan";
 import { AirBundleSchema, HouseholdProfileSchema, LocaleSchema } from "@/engine/schema";
 import { resolveDemoInputs } from "@/lib/ahmedabad-fixture";
 import { generateGuardedExplain } from "@/server/ai-service";
+import { extractUserGeminiKey } from "@/server/gemini";
 import { checkRateLimit, clientIpFromHeaders } from "@/server/ratelimit";
 
 const ExplainRequestSchema = z.object({
@@ -36,6 +37,11 @@ export async function POST(req: NextRequest) {
   const { profile, air, focusId } = resolveInputs(parsed.data);
   const full = computeFullPlan(profile, air, focusId);
   const eligible = full.memberPlans[focusId]?.activeActionIds ?? [];
-  const explained = await generateGuardedExplain(full.factSheet, eligible);
+  const explained = await generateGuardedExplain(
+    full.factSheet,
+    eligible,
+    undefined,
+    extractUserGeminiKey(req.headers),
+  );
   return NextResponse.json({ ...explained, factSheet: full.factSheet });
 }

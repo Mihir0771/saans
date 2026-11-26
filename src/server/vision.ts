@@ -47,7 +47,11 @@ export function offlineVisionFallback(): VisionSpecs {
   };
 }
 
-export async function analyzePurifierImage(bytes: Uint8Array, mime: string): Promise<VisionSpecs> {
+export async function analyzePurifierImage(
+  bytes: Uint8Array,
+  mime: string,
+  apiKey?: string,
+): Promise<VisionSpecs> {
   const prompt = `${loadPromptFile("system")}\n\n${loadPromptFile("vision")}`;
   const b64 = Buffer.from(bytes).toString("base64");
 
@@ -81,5 +85,5 @@ export async function analyzePurifierImage(bytes: Uint8Array, mime: string): Pro
     });
     const rawText = extractInteractionText(interaction.outputs);
     return VisionSpecsSchema.parse(JSON.parse(rawText));
-  });
+  }, apiKey);
 }

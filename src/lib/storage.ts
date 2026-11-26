@@ -7,6 +7,7 @@ const LOCALE_KEY = "saans_locale_v1";
 const ACTIONS_KEY = "saans_active_actions_v1";
 const FOCUS_KEY = "saans_focus_member_v1";
 const TUTORIAL_KEY = "saans_tutorial_dismissed_v1";
+const GEMINI_KEY_STORAGE = "saans_gemini_key_v1";
 
 export type ThemeMode = "system" | "light" | "dark";
 
@@ -40,6 +41,7 @@ export function clearAllStoredData(): void {
     window.localStorage.removeItem(ACTIONS_KEY);
     window.localStorage.removeItem(FOCUS_KEY);
     window.localStorage.removeItem(TUTORIAL_KEY);
+    window.localStorage.removeItem(GEMINI_KEY_STORAGE);
   } catch {
     // ignore
   }
@@ -105,6 +107,32 @@ export function saveTutorialDismissed(dismissed: boolean): void {
   try {
     if (dismissed) window.localStorage.setItem(TUTORIAL_KEY, "1");
     else window.localStorage.removeItem(TUTORIAL_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+export function loadUserGeminiKey(): string | null {
+  if (typeof window === "undefined") return null;
+  const v = window.localStorage.getItem(GEMINI_KEY_STORAGE)?.trim() ?? "";
+  return v.length >= 20 ? v : null;
+}
+
+export function saveUserGeminiKey(key: string): void {
+  if (typeof window === "undefined") return;
+  const clean = key.trim();
+  try {
+    if (clean.length >= 20) window.localStorage.setItem(GEMINI_KEY_STORAGE, clean);
+    else window.localStorage.removeItem(GEMINI_KEY_STORAGE);
+  } catch {
+    // ignore
+  }
+}
+
+export function clearUserGeminiKey(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(GEMINI_KEY_STORAGE);
   } catch {
     // ignore
   }

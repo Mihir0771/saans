@@ -19,8 +19,17 @@ export function getGeminiModels(): string[] {
   return Array.from(new Set([primary, ...fallbacks]));
 }
 
-export function isGeminiConfigured(): boolean {
-  return Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim().length > 10);
+export function extractUserGeminiKey(headers: {
+  get(name: string): string | null;
+}): string | undefined {
+  const raw = headers.get("x-gemini-api-key")?.trim();
+  if (!raw || raw.length < 20 || raw.length > 200) return undefined;
+  return /^[\x21-\x7e]+$/.test(raw) ? raw : undefined;
+}
+
+export function isGeminiConfigured(overrideKey?: string): boolean {
+  const key = overrideKey?.trim() || process.env.GEMINI_API_KEY?.trim() || "";
+  return key.length > 10;
 }
 
 export function checkDailyGeminiBudget(): boolean {
@@ -52,9 +61,10 @@ export function setCachedAiResponse(key: string, val: string): void {
   responseCache.set(key, val);
 }
 
-export function createGeminiClient(): GoogleGenAI | null {
-  if (!isGeminiConfigured()) return null;
-  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+export function createGeminiClient(overrideKey?: string): GoogleGenAI | null {
+  const apiKey = overrideKey?.trim() || process.env.GEMINI_API_KEY?.trim();
+  if (!apiKey || apiKey.length <= 10) return null;
+  return new GoogleGenAI({ apiKey });
 }
 
 export function extractInteractionText(outputs?: Array<{ type?: string; text?: string }>): string {
@@ -67,8 +77,9 @@ export function extractInteractionText(outputs?: Array<{ type?: string; text?: s
 
 export async function runWithModelFallback<T>(
   fn: (client: GoogleGenAI, model: string) => Promise<T>,
+  overrideKey?: string,
 ): Promise<T> {
-  const client = createGeminiClient();
+  const client = createGeminiClient(overrideKey);
   if (!client) throw new Error("GEMINI_API_KEY not configured");
   if (!checkDailyGeminiBudget()) throw new Error("Daily Gemini budget reached");
 

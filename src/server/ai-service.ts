@@ -27,11 +27,16 @@ export const ExplainRawSchema = z.object({
   tips: z.array(z.object({ actionId: z.string().max(40), why: z.string().min(1).max(240) })).max(5),
 });
 
-export type ExplainGenerator = (prompt: string, isRetry: boolean) => Promise<string>;
+export type ExplainGenerator = (
+  prompt: string,
+  isRetry: boolean,
+  apiKey?: string,
+) => Promise<string>;
 export type ChatGenerator = (
   prompt: string,
   ctx: EngineToolContext,
   isRetry: boolean,
+  apiKey?: string,
 ) => Promise<{ text: string; factSheet: FactSheet }>;
 
 function guardExplainObject(
@@ -72,6 +77,7 @@ export async function generateGuardedExplain(
   factSheet: FactSheet,
   eligibleActionIds: string[],
   generator?: ExplainGenerator,
+  apiKey?: string,
 ): Promise<ExplainPayload> {
   const cKey = cacheKeyForPayload({ kind: "explain", factSheet, eligibleActionIds });
   const useCache = generator === undefined;
@@ -88,7 +94,7 @@ export async function generateGuardedExplain(
         attempt === 0
           ? basePrompt
           : `${basePrompt}\n\nSTRICT REMINDER: Output ZERO digits outside {{fact:id}} slots.`;
-      const parsed = ExplainRawSchema.parse(JSON.parse(await gen(prompt, attempt === 1)));
+      const parsed = ExplainRawSchema.parse(JSON.parse(await gen(prompt, attempt === 1, apiKey)));
       const guarded = guardExplainObject(parsed, factSheet, eligibleActionIds);
       if (guarded) {
         if (useCache) setCachedAiResponse(cKey, JSON.stringify(guarded));
@@ -127,9 +133,10 @@ async function tryChatAttempt(
   ctx: EngineToolContext,
   gen: ChatGenerator,
   isRetry: boolean,
+  apiKey?: string,
 ): Promise<ChatResponsePayload | null> {
   try {
-    const out = await gen(prompt, ctx, isRetry);
+    const out = await gen(prompt, ctx, isRetry, apiKey);
     const guarded = runNumberGuard(out.text, out.factSheet);
     if (!guarded.ok) return null;
     return {
@@ -153,6 +160,7 @@ export async function generateGuardedChat(input: {
   focusMemberId: string;
   locale: Locale;
   generator?: ChatGenerator;
+  apiKey?: string;
 }): Promise<ChatResponsePayload> {
   const cleanMsg = sanitizeUserText(input.message, 500);
   const ctx: EngineToolContext = {
@@ -164,13 +172,14 @@ export async function generateGuardedChat(input: {
   const basePrompt = buildChatPrompt(cleanMsg, input.history, input.locale, ctx.factSheet);
   const gen = input.generator ?? defaultChatGenerator;
 
-  const first = await tryChatAttempt(basePrompt, ctx, gen, false);
+  const first = await tryChatAttempt(basePrompt, ctx, gen, false, input.apiKey);
   if (first) return first;
   const second = await tryChatAttempt(
     `${basePrompt}\n\nSTRICT REMINDER: Never write raw numbers. Use {{fact:id}} slots only.`,
     ctx,
     gen,
     true,
+    input.apiKey,
   );
   if (second) return second;
 

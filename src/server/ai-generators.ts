@@ -2,7 +2,11 @@ import type { FactSheet } from "@/engine/schema";
 import { extractInteractionText, runWithModelFallback } from "./gemini";
 import { executeEngineTool, GEMINI_TOOL_DECLARATIONS, type EngineToolContext } from "./tools";
 
-export async function defaultExplainGenerator(prompt: string): Promise<string> {
+export async function defaultExplainGenerator(
+  prompt: string,
+  _isRetry: boolean,
+  apiKey?: string,
+): Promise<string> {
   return runWithModelFallback(async (client, model) => {
     const res = await client.interactions.create({
       model,
@@ -42,12 +46,14 @@ export async function defaultExplainGenerator(prompt: string): Promise<string> {
       store: false,
     });
     return extractInteractionText(res.outputs);
-  });
+  }, apiKey);
 }
 
 export async function defaultChatGenerator(
   prompt: string,
   ctx: EngineToolContext,
+  _isRetry: boolean,
+  apiKey?: string,
 ): Promise<{ text: string; factSheet: FactSheet }> {
   return runWithModelFallback(async (client, model) => {
     const first = await client.interactions.create({
@@ -83,5 +89,5 @@ export async function defaultChatGenerator(
       store: false,
     });
     return { text: extractInteractionText(followUp.outputs), factSheet: ctx.factSheet };
-  });
+  }, apiKey);
 }
