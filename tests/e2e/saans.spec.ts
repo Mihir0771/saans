@@ -30,6 +30,10 @@ test.describe("Saans E2E user journeys", () => {
     await page.getByRole("button", { name: /Dadi/i }).click();
     await expect(page.locator("#gaugeDesc")).toContainText("Dadi");
 
+    // Click an hour bar on the interactive 24h chart and verify live inspector updates
+    await page.locator("svg[aria-labelledby='stripTitle stripDesc'] rect").nth(14).click();
+    await expect(page.locator("#next24-heading").locator("..")).toContainText("14:00");
+
     // Open and close "Show the math" modal
     await page
       .getByRole("button", { name: /Show the math/i })

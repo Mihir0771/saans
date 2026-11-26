@@ -3,46 +3,7 @@
 import React, { useState } from "react";
 import type { Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
-
-function CumulativeTable({
-  typicalSeries,
-  planSeries,
-  locale,
-}: {
-  typicalSeries: number[];
-  planSeries: number[];
-  locale: Locale;
-}) {
-  return (
-    <div id="cum-data-table" className="mt-2 overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
-        <caption className="pb-2 text-left text-ink-2">{t(locale, "plan.subtitle")}</caption>
-        <thead>
-          <tr className="border-b border-divider text-left">
-            <th scope="col" className="py-1.5 pr-3">
-              Time
-            </th>
-            <th scope="col" className="py-1.5 pr-3">
-              {t(locale, "today.statTypical")}
-            </th>
-            <th scope="col" className="py-1.5">
-              {t(locale, "today.statPlan")}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => (
-            <tr key={h} className="border-b border-divider">
-              <td className="py-1 pr-3 font-num">{String(h % 24).padStart(2, "0")}:00</td>
-              <td className="py-1 pr-3 font-num">{(typicalSeries[h] ?? 0).toFixed(1)}×</td>
-              <td className="py-1 font-num">{(planSeries[h] ?? 0).toFixed(1)}×</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+import { CumulativeTable, DoseLegend, DoseScrubReadout } from "./CumulativeDoseExtras";
 
 function AxisGrid({
   maxY,
@@ -109,9 +70,11 @@ function PlotEndLabels({
 function CumulativePlot({
   typicalSeries,
   planSeries,
+  scrubHour,
 }: {
   typicalSeries: number[];
   planSeries: number[];
+  scrubHour: number;
 }) {
   const typEnd = typicalSeries[24] ?? 0;
   const planEnd = planSeries[24] ?? 0;
@@ -120,6 +83,7 @@ function CumulativePlot({
   const y = (v: number) => 164 - (150 * v) / maxY;
   const pT = typicalSeries.map((v, h) => `${x(h)},${y(v)}`);
   const pP = planSeries.map((v, h) => `${x(h)},${y(v)}`);
+  const cx = x(scrubHour);
   return (
     <g>
       <AxisGrid maxY={maxY} x={x} y={y} />
@@ -143,51 +107,66 @@ function CumulativePlot({
         strokeWidth="3.5"
         strokeLinecap="round"
       />
+      <line x1={cx} y1={14} x2={cx} y2={164} stroke="var(--ink)" strokeDasharray="3 3" />
+      <circle cx={cx} cy={y(typicalSeries[scrubHour] ?? 0)} r={5} fill="var(--typical)" />
+      <circle cx={cx} cy={y(planSeries[scrubHour] ?? 0)} r={5.5} fill="var(--plan)" />
       <PlotEndLabels typEnd={typEnd} planEnd={planEnd} y={y} />
     </g>
   );
 }
 
-export function CumulativeDoseChart({
+function hourFromPointer(e: React.PointerEvent<SVGSVGElement>): number {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const svgX = ((e.clientX - rect.left) / rect.width) * 336;
+  const clamped = Math.max(34, Math.min(326, svgX));
+  return Math.round(((clamped - 34) / 292) * 24);
+}
+
+function DoseScrubber({
+  scrubHour,
+  locale,
+  onChange,
+}: {
+  scrubHour: number;
+  locale: Locale;
+  onChange: (h: number) => void;
+}) {
+  return (
+    <div className="mt-2 flex items-center gap-3">
+      <input
+        type="range"
+        min={0}
+        max={24}
+        value={scrubHour}
+        aria-label={t(locale, "plan.scrubHint")}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="h-6 flex-1 accent-[var(--brand)]"
+      />
+      <span className="text-xs text-ink-3">{t(locale, "plan.scrubHint")}</span>
+    </div>
+  );
+}
+
+function DoseTableSection({
+  showTable,
+  onToggle,
   typicalSeries,
   planSeries,
   locale,
 }: {
+  showTable: boolean;
+  onToggle: () => void;
   typicalSeries: number[];
   planSeries: number[];
   locale: Locale;
 }) {
-  const [showTable, setShowTable] = useState(false);
   return (
-    <div>
-      <svg
-        className="block h-auto w-full"
-        viewBox="0 0 336 200"
-        role="img"
-        aria-labelledby="cumTitle cumDesc"
-      >
-        <title id="cumTitle">{t(locale, "plan.title")}</title>
-        <desc id="cumDesc">
-          Typical {(typicalSeries[24] ?? 0).toFixed(1)}× vs Saans plan{" "}
-          {(planSeries[24] ?? 0).toFixed(1)}×
-        </desc>
-        <CumulativePlot typicalSeries={typicalSeries} planSeries={planSeries} />
-      </svg>
-      <div className="mt-2 flex flex-wrap justify-center gap-4 text-sm text-ink-2">
-        <span className="inline-flex items-center gap-1.5">
-          <i className="inline-block h-1 w-5 rounded bg-typical" aria-hidden="true" />
-          {t(locale, "plan.typicalDashed")}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <i className="inline-block h-2 w-5 rounded bg-plan" aria-hidden="true" />
-          {t(locale, "plan.planSolid")}
-        </span>
-      </div>
+    <>
       <button
         type="button"
         aria-expanded={showTable}
         aria-controls="cum-data-table"
-        onClick={() => setShowTable((v) => !v)}
+        onClick={onToggle}
         className="mt-1 min-h-[44px] px-2 font-bold text-brand-ink underline underline-offset-4"
       >
         {showTable ? t(locale, "today.hideTable") : t(locale, "today.viewTable")}
@@ -195,6 +174,76 @@ export function CumulativeDoseChart({
       {showTable ? (
         <CumulativeTable typicalSeries={typicalSeries} planSeries={planSeries} locale={locale} />
       ) : null}
+    </>
+  );
+}
+
+function CumulativeChartSvg({
+  typicalSeries,
+  planSeries,
+  scrubHour,
+  locale,
+  onPointer,
+}: {
+  typicalSeries: number[];
+  planSeries: number[];
+  scrubHour: number;
+  locale: Locale;
+  onPointer: (e: React.PointerEvent<SVGSVGElement>) => void;
+}) {
+  return (
+    <svg
+      className="block h-auto w-full cursor-crosshair select-none"
+      viewBox="0 0 336 200"
+      role="img"
+      aria-labelledby="cumTitle cumDesc"
+      onPointerDown={onPointer}
+      onPointerMove={onPointer}
+    >
+      <title id="cumTitle">{t(locale, "plan.title")}</title>
+      <desc id="cumDesc">
+        Typical {(typicalSeries[24] ?? 0).toFixed(1)}× vs Saans plan{" "}
+        {(planSeries[24] ?? 0).toFixed(1)}×
+      </desc>
+      <CumulativePlot typicalSeries={typicalSeries} planSeries={planSeries} scrubHour={scrubHour} />
+    </svg>
+  );
+}
+
+export function CumulativeDoseChart(p: {
+  typicalSeries: number[];
+  planSeries: number[];
+  locale: Locale;
+}) {
+  const [showTable, setShowTable] = useState(false);
+  const [scrubHour, setScrubHour] = useState(24);
+  const onPointer = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (e.buttons === 1 || e.type === "pointerdown") setScrubHour(hourFromPointer(e));
+  };
+  return (
+    <div>
+      <DoseScrubReadout
+        hour={scrubHour}
+        typVal={p.typicalSeries[scrubHour] ?? 0}
+        planVal={p.planSeries[scrubHour] ?? 0}
+        locale={p.locale}
+      />
+      <CumulativeChartSvg
+        typicalSeries={p.typicalSeries}
+        planSeries={p.planSeries}
+        scrubHour={scrubHour}
+        locale={p.locale}
+        onPointer={onPointer}
+      />
+      <DoseScrubber scrubHour={scrubHour} locale={p.locale} onChange={setScrubHour} />
+      <DoseLegend locale={p.locale} />
+      <DoseTableSection
+        showTable={showTable}
+        onToggle={() => setShowTable((v) => !v)}
+        typicalSeries={p.typicalSeries}
+        planSeries={p.planSeries}
+        locale={p.locale}
+      />
     </div>
   );
 }

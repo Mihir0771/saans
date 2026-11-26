@@ -54,7 +54,13 @@ export function HomeLabView({
           {t(locale, "lab.title")}
         </h1>
         <p className="mb-3 text-sm text-ink-2">{t(locale, "lab.subtitle")}</p>
-        <IndoorBandSvg outdoor={outdoor} low={sim.low} central={sim.central} high={sim.high} />
+        <IndoorBandSvg
+          outdoor={outdoor}
+          low={sim.low}
+          central={sim.central}
+          high={sim.high}
+          locale={locale}
+        />
         <LabControls home={profile.home} locale={locale} onUpdateHome={onUpdateHome} />
       </Card>
       <div className="grid gap-4">

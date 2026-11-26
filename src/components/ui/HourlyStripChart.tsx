@@ -4,43 +4,56 @@ import React, { useState } from "react";
 import { aqiToBand, computeCpcbAqi } from "@/engine/aqi";
 import type { AirHour, Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
-import { BandShapeIcon } from "./AQIChip";
+import {
+  HourInspectorCard,
+  StripLegend,
+  StripScrubber,
+  StripTableSection,
+} from "./HourlyStripInspector";
 
 const pmBand = (pm: number) => aqiToBand(computeCpcbAqi({ pm25: pm }).aqi);
 
-function HourlyStripTable({ slice, locale }: { slice: AirHour[]; locale: Locale }) {
+function StripBarRect({
+  hr,
+  idx,
+  maxPm,
+  selected,
+  onSelect,
+}: {
+  hr: AirHour;
+  idx: number;
+  maxPm: number;
+  selected: boolean;
+  onSelect: (idx: number) => void;
+}) {
+  const bh = Math.max(4, (hr.pm25 / maxPm) * 78);
+  const b = pmBand(hr.pm25);
   return (
-    <div id="hourly-data-table" className="mt-2 overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
-        <caption className="pb-2 text-left text-ink-2">{t(locale, "today.next24Sub")}</caption>
-        <thead>
-          <tr className="border-b border-divider text-left">
-            <th scope="col" className="py-1.5 pr-3">
-              Hour
-            </th>
-            <th scope="col" className="py-1.5 pr-3">
-              PM2.5 (µg/m³)
-            </th>
-            <th scope="col" className="py-1.5">
-              Band
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {slice.map((h) => (
-            <tr key={h.hourLocal} className="border-b border-divider">
-              <td className="py-1 pr-3 font-num">{String(h.hourLocal).padStart(2, "0")}:00</td>
-              <td className="py-1 pr-3 font-num">{Math.round(h.pm25)}</td>
-              <td className="py-1">{t(locale, `aqiBands.${pmBand(h.pm25)}`)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <rect
+      x={idx * 14}
+      y={108 - bh}
+      width={11}
+      height={bh}
+      rx={2.5}
+      fill={`var(--aqi-${b}-fill)`}
+      stroke={selected ? "var(--ink)" : `var(--aqi-${b}-edge)`}
+      strokeWidth={selected ? 2.5 : 1.5}
+      className="cursor-pointer"
+      onClick={() => onSelect(idx)}
+      onMouseEnter={() => onSelect(idx)}
+    />
   );
 }
 
-function StripBars({ slice }: { slice: AirHour[] }) {
+function StripBars({
+  slice,
+  activeIdx,
+  onSelect,
+}: {
+  slice: AirHour[];
+  activeIdx: number;
+  onSelect: (idx: number) => void;
+}) {
   const maxPm = Math.max(200, ...slice.map((h) => h.pm25));
   return (
     <g>
@@ -55,23 +68,25 @@ function StripBars({ slice }: { slice: AirHour[] }) {
           {["12a", "6a", "12p", "6p"][i]}
         </text>
       ))}
-      {slice.map((hr, idx) => {
-        const bh = Math.max(4, (hr.pm25 / maxPm) * 78);
-        const b = pmBand(hr.pm25);
-        return (
-          <rect
-            key={hr.hourLocal}
-            x={idx * 14}
-            y={108 - bh}
-            width={11}
-            height={bh}
-            rx={2.5}
-            fill={`var(--aqi-${b}-fill)`}
-            stroke={`var(--aqi-${b}-edge)`}
-            strokeWidth={1.5}
-          />
-        );
-      })}
+      <line
+        x1={activeIdx * 14 + 5.5}
+        y1={10}
+        x2={activeIdx * 14 + 5.5}
+        y2={108}
+        stroke="var(--brand)"
+        strokeWidth="1.5"
+        strokeDasharray="3 3"
+      />
+      {slice.map((hr, idx) => (
+        <StripBarRect
+          key={hr.hourLocal}
+          hr={hr}
+          idx={idx}
+          maxPm={maxPm}
+          selected={idx === activeIdx}
+          onSelect={onSelect}
+        />
+      ))}
       <line x1="0" y1={108} x2="336" y2={108} stroke="var(--line)" strokeWidth="1" />
     </g>
   );
@@ -125,53 +140,80 @@ function WindowMarkers({
   );
 }
 
-export function HourlyStripChart({
-  hours,
+function HourlyStripSvg({
+  slice,
+  activeIdx,
   bestStart,
   worstStart,
   locale,
+  onSelect,
 }: {
+  slice: AirHour[];
+  activeIdx: number;
+  bestStart: number;
+  worstStart: number;
+  locale: Locale;
+  onSelect: (idx: number) => void;
+}) {
+  return (
+    <svg
+      className="block h-auto w-full select-none"
+      viewBox="0 0 336 166"
+      role="img"
+      aria-labelledby="stripTitle stripDesc"
+    >
+      <title id="stripTitle">{t(locale, "today.next24")}</title>
+      <desc id="stripDesc">{t(locale, "today.next24Sub")}</desc>
+      <StripBars slice={slice} activeIdx={activeIdx} onSelect={onSelect} />
+      <WindowMarkers bestStart={bestStart} worstStart={worstStart} locale={locale} />
+    </svg>
+  );
+}
+
+export function HourlyStripChart(p: {
   hours: AirHour[];
   bestStart: number;
   worstStart: number;
   locale: Locale;
 }) {
   const [showTable, setShowTable] = useState(false);
-  const slice = hours.slice(0, 24);
-  const toggleBtn = (
-    <button
-      type="button"
-      aria-expanded={showTable}
-      aria-controls="hourly-data-table"
-      onClick={() => setShowTable((v) => !v)}
-      className="mt-1 min-h-[44px] px-2 font-bold text-brand-ink underline underline-offset-4"
-    >
-      {showTable ? t(locale, "today.hideTable") : t(locale, "today.viewTable")}
-    </button>
-  );
+  const [activeIdx, setActiveIdx] = useState(0);
+  const slice = p.hours.slice(0, 24);
+  const activeHour = slice[activeIdx] ?? slice[0];
+
   return (
     <div>
-      <svg
-        className="block h-auto w-full"
-        viewBox="0 0 336 166"
-        role="img"
-        aria-labelledby="stripTitle stripDesc"
-      >
-        <title id="stripTitle">{t(locale, "today.next24")}</title>
-        <desc id="stripDesc">{t(locale, "today.next24Sub")}</desc>
-        <StripBars slice={slice} />
-        <WindowMarkers bestStart={bestStart} worstStart={worstStart} locale={locale} />
-      </svg>
-      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-ink-2">
-        {(["mod", "poor", "vpoor", "severe"] as const).map((b) => (
-          <span key={b} className="inline-flex items-center gap-1.5">
-            <BandShapeIcon band={b} size={12} />
-            {t(locale, `aqiBands.${b}`)}
-          </span>
-        ))}
-      </div>
-      {toggleBtn}
-      {showTable ? <HourlyStripTable slice={slice} locale={locale} /> : null}
+      {activeHour ? (
+        <HourInspectorCard
+          hour={activeHour}
+          bestStart={p.bestStart}
+          worstStart={p.worstStart}
+          locale={p.locale}
+        />
+      ) : null}
+      <HourlyStripSvg
+        slice={slice}
+        activeIdx={activeIdx}
+        bestStart={p.bestStart}
+        worstStart={p.worstStart}
+        locale={p.locale}
+        onSelect={setActiveIdx}
+      />
+      <StripScrubber
+        max={Math.max(0, slice.length - 1)}
+        activeIdx={activeIdx}
+        locale={p.locale}
+        onChange={setActiveIdx}
+      />
+      <StripLegend locale={p.locale} />
+      <StripTableSection
+        showTable={showTable}
+        onToggle={() => setShowTable((v) => !v)}
+        slice={slice}
+        activeIdx={activeIdx}
+        onSelect={setActiveIdx}
+        locale={p.locale}
+      />
     </div>
   );
 }

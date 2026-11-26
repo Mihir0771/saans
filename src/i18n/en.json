@@ -73,7 +73,16 @@
     "grap_indicative_note": "Official GRAP stage is declared by CAQM and may be invoked on forecasts before thresholds are crossed.",
     "trustFooter": "Air data: CAMS ENSEMBLE / CAMS global via Open-Meteo · ~25 km model grid, so your street may differ. Saans is not medical advice; follow your doctor's plan for asthma or heart conditions.",
     "changeLocation": "Change city",
-    "simulateSmog": "Simulate smog day"
+    "simulateSmog": "Simulate smog day",
+    "inspectHint": "Tap or hover any hour bar to inspect",
+    "bestWindowTag": "Best outdoor window",
+    "avoidWindowTag": "Peak smog — limit outdoors",
+    "normalWindowTag": "Standard precautions",
+    "wind": "Wind",
+    "temp": "Temp",
+    "mixing": "Mixing",
+    "quickDelhi": "Delhi",
+    "quickAhmedabad": "Ahmedabad"
   },
   "plan": {
     "eyebrow": "Day Replay",
@@ -81,6 +90,8 @@
     "subtitle": "Cumulative PM2.5 dose as a multiple of the WHO 24-h guideline budget.",
     "typicalDashed": "Typical day (dashed)",
     "planSolid": "With Saans plan (solid)",
+    "scrubHint": "Click or drag the chart to inspect any hour",
+    "savedAt": "Saved",
     "waterfallTitle": "What each action saves",
     "waterfallSub": "Shapley attribution adds up exactly to the difference between the two days.",
     "typicalDay": "Typical day",
@@ -100,6 +111,9 @@
   "lab": {
     "title": "Home Air Lab",
     "subtitle": "Simulate your room's PM2.5 over 24 hours with low–high uncertainty bands.",
+    "outdoor": "Outdoor",
+    "indoor": "Indoor",
+    "cleaner": "cleaner indoors",
     "areaLabel": "Room size (m²)",
     "leakiness": "Window & door seal",
     "tight": "Tight",

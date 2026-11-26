@@ -164,6 +164,8 @@ interface TodayViewProps {
   onSimTarget: (mean: number | undefined) => void;
   onShowMath: (detail: MathDetail) => void;
   onOpenOnboarding: () => void;
+  onTrySharma: () => void;
+  onTryAhmedabad: () => void;
 }
 
 export function TodayView(p: TodayViewProps) {
@@ -188,6 +190,8 @@ export function TodayView(p: TodayViewProps) {
           onCalibrate={p.onCalibrate}
           onSimTarget={p.onSimTarget}
           onOpenOnboarding={p.onOpenOnboarding}
+          onTrySharma={p.onTrySharma}
+          onTryAhmedabad={p.onTryAhmedabad}
         />
       </div>
       <TodayRightColumn

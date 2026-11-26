@@ -11,10 +11,11 @@ export function Button({
   variant?: "primary" | "secondary" | "ghost";
 }) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-pill font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center gap-2 rounded-pill font-semibold cursor-pointer active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed";
   const styles = {
     primary: "min-h-[48px] px-5 bg-brand text-on-brand border border-brand hover:opacity-95",
-    secondary: "min-h-[44px] px-4 bg-surface text-ink border border-line hover:bg-surface-2",
+    secondary:
+      "min-h-[44px] px-4 bg-surface text-ink border border-line hover:bg-surface-2 aria-[pressed=true]:border-brand aria-[pressed=true]:bg-brand-soft aria-[pressed=true]:text-brand-ink",
     ghost:
       "min-h-[44px] px-3 bg-transparent text-brand-ink border border-transparent hover:bg-brand-soft",
   };
