@@ -10,5 +10,5 @@ What I focused on most: making GenAI safe for health-adjacent advice using **Eng
 
 Verified locally end-to-end across pure-TS engine tests, offline AI safety evals, production build, Playwright E2E, and Axe WCAG 2.2 AA across mobile (360px) & desktop (1280px).
 
-Live link & demo video: `<LIVE_URL>` / `<VIDEO_URL>`
+Live link & demo video: https://saans-jet.vercel.app / `<VIDEO_URL>`
 #PromptWars #GeminiAPI #GoogleAntigravity #CleanAir #NextJS #Accessibility

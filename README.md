@@ -5,7 +5,7 @@
 
 |                     |                                                                                     |
 | ------------------- | ----------------------------------------------------------------------------------- |
-| **Live app**        | `<LIVE_URL>`                                                                        |
+| **Live app**        | `https://saans-jet.vercel.app`                                                      |
 | **Demo video**      | `<VIDEO_URL>`                                                                       |
 | **Technical blog**  | `<BLOG_URL>`                                                                        |
 | **LinkedIn post**   | `<LINKEDIN_URL>`                                                                    |
@@ -139,7 +139,7 @@ cp .env.example .env.local        # add GEMINI_API_KEY (never commit it)
 npm install
 npm run dev                       # http://localhost:3000
 npm run verify                    # typecheck, lint, tests, AI evals, e2e, a11y, Lighthouse, security, repo guard
-npm run smoke -- <LIVE_URL>       # post-deploy smoke test
+npm run smoke -- https://saans-jet.vercel.app       # post-deploy smoke test
 ```
 
 ### Verification (generated)
@@ -163,7 +163,7 @@ Copied from `VERIFICATION_REPORT.md` (`npm run verify` overall: **PASS**, `2026-
 - **Functions:** 100%
 - **Lines:** 99.88%
 
-> Note: Lighthouse CLI (`npx lighthouse`) and cloud deployment (`gcloud` / `vercel` CLIs) were not available in this local environment, and `<LIVE_URL>` / `<VIDEO_URL>` / `<BLOG_URL>` / `<LINKEDIN_URL>` remain placeholders until deployed and published.
+> Note: Live deployment is verified at `https://saans-jet.vercel.app` via `npm run smoke`; `<VIDEO_URL>` / `<BLOG_URL>` / `<LINKEDIN_URL>` remain placeholders until published.
 
 ## 13. Google technologies used
 
