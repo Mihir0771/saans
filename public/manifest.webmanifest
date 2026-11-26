@@ -1,0 +1,17 @@
+{
+  "name": "Saans — Daily Breath Budget",
+  "short_name": "Saans",
+  "description": "Your family's daily PM2.5 Breath Budget and indoor air companion.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f3ec",
+  "theme_color": "#0e6b63",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+.next/
+node_modules/
+coverage/
+playwright-report/
+test-results/
+tests/e2e-artifacts/
+VERIFICATION_REPORT.md
+docs/reference/reference-prototype.html

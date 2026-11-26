@@ -1,0 +1,24 @@
+# Dependencies & build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+playwright-report/
+test-results/
+tests/e2e-artifacts/
+tsconfig.tsbuildinfo
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# OS & editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Private competition strategy/playbook (keep out of public repo)
+1_RESEARCH_AND_STRATEGY.md
+2_ANTIGRAVITY_PLAYBOOK.md

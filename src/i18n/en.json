@@ -1,0 +1,246 @@
+{
+  "app": {
+    "name": "Saans",
+    "tagline": "Your family's daily Breath Budget",
+    "skip": "Skip to main content",
+    "more": "More",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Delete my data",
+    "resetConfirm": "Delete all saved family & home data from this browser?",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System"
+  },
+  "nav": {
+    "today": "Today",
+    "plan": "Plan",
+    "lab": "Home Lab",
+    "ask": "Ask",
+    "community": "Community",
+    "proof": "Proof & Myths",
+    "onboarding": "Setup"
+  },
+  "banners": {
+    "demo": "Demo scenario. Illustrative numbers for the Sharma family — not live data.",
+    "demoAhmedabad": "Demo scenario. Illustrative Ahmedabad winter numbers for the Patel family — not live data.",
+    "simulation": "Simulation mode. Forecast shape scaled to chosen smog level.",
+    "stale": "Stale data. Showing last saved forecast while live feed reconnects.",
+    "offline": "Offline sample. Live air feed unavailable — using cached Delhi pattern.",
+    "calibrated": "Calibrated by you",
+    "undo": "Undo",
+    "trySharma": "Try Sharma family (Delhi smog day)"
+  },
+  "aqiBands": {
+    "good": "Good",
+    "sat": "Satisfactory",
+    "mod": "Moderate",
+    "poor": "Poor",
+    "vpoor": "Very Poor",
+    "severe": "Severe"
+  },
+  "today": {
+    "eyebrow": "Breath Budget",
+    "title": "Today's dose vs the WHO guideline",
+    "withPlan": "with your Saans plan",
+    "legendPlan": "With plan",
+    "legendTypical": "Typical day",
+    "legendTick": "1× guideline",
+    "statTypical": "typical day",
+    "statPlan": "with plan",
+    "statSaved": "inhaled PM2.5",
+    "airNow": "Air now",
+    "modelEstimate": "Model estimate",
+    "cpcbScale": "CPCB scale · dominant:",
+    "pm25": "PM2.5",
+    "trappedRisk": "Trapped-air risk",
+    "riskLow": "Low",
+    "riskModerate": "Moderate",
+    "riskHigh": "High",
+    "calibrateBtn": "Calibrate with my own monitor",
+    "calibrateHint": "Enter your current indoor or street monitor PM2.5 (µg/m³):",
+    "next24": "Next 24 hours",
+    "next24Sub": "PM2.5 forecast by hour. Best and worst windows marked.",
+    "avoid": "Avoid",
+    "best": "Best",
+    "viewTable": "View as table",
+    "hideTable": "Hide table",
+    "doNowTitle": "Do these 3 things now",
+    "showMath": "Show the math",
+    "effort": "Effort",
+    "grapTitle": "Indicative GRAP Stage",
+    "grap_indicative_note": "Official GRAP stage is declared by CAQM and may be invoked on forecasts before thresholds are crossed.",
+    "trustFooter": "Air data: CAMS ENSEMBLE / CAMS global via Open-Meteo · ~25 km model grid, so your street may differ. Saans is not medical advice; follow your doctor's plan for asthma or heart conditions.",
+    "changeLocation": "Change city",
+    "simulateSmog": "Simulate smog day"
+  },
+  "plan": {
+    "eyebrow": "Day Replay",
+    "title": "Dose across the day",
+    "subtitle": "Cumulative PM2.5 dose as a multiple of the WHO 24-h guideline budget.",
+    "typicalDashed": "Typical day (dashed)",
+    "planSolid": "With Saans plan (solid)",
+    "waterfallTitle": "What each action saves",
+    "waterfallSub": "Shapley attribution adds up exactly to the difference between the two days.",
+    "typicalDay": "Typical day",
+    "withSaansPlan": "With Saans plan",
+    "oneTimeCost": "One-time cost",
+    "dailyCost": "Extra running cost",
+    "addCalendar": "Add today's plan to my calendar (.ics)",
+    "commuteTitle": "Commute alternatives",
+    "commuteSub": "Compare dose, CO₂e, cost, and time for your trip.",
+    "mode": "Mode",
+    "dose": "Dose",
+    "co2": "CO₂e",
+    "cost": "Cost",
+    "time": "Time",
+    "trustNote": "Impact is modelled from forecast air, your home profile, and published ranges. Not a medical prediction."
+  },
+  "lab": {
+    "title": "Home Air Lab",
+    "subtitle": "Simulate your room's PM2.5 over 24 hours with low–high uncertainty bands.",
+    "areaLabel": "Room size (m²)",
+    "leakiness": "Window & door seal",
+    "tight": "Tight",
+    "average": "Average",
+    "leaky": "Leaky",
+    "purifierCadr": "Purifier / CR Box CADR (m³/h)",
+    "purifierOn": "Run purifier / DIY filter",
+    "cookingFuel": "Cooking fuel",
+    "ventTitle": "Smart ventilation window",
+    "vent_found": "Best 20-minute window to air out today:",
+    "vent_none": "No good outdoor airing window today — outdoor PM2.5 stays higher than indoors.",
+    "crTitle": "DIY Corsi-Rosenthal Box Builder",
+    "crSub": "A box fan + 4× MERV 13 filters delivers 150–360 CFM (255–610 m³/h) CADR at a fraction of commercial cost.",
+    "crSafety": "Safety: Use a modern fan with an intact cord, keep clear of curtains, and do not leave unattended while sleeping.",
+    "snapTitle": "Snap & Confirm purifier label",
+    "snapSub": "Take or upload a photo of your purifier or filter box. Photos are read in memory and never stored.",
+    "snapUpload": "Upload label photo",
+    "snapBusy": "Reading label…",
+    "snapApply": "Confirm & apply to Home Lab"
+  },
+  "ask": {
+    "subtitle": "answers use your family and today's air",
+    "verified": "✓ Numbers verified by engine",
+    "offlineBadge": "Offline guidance (AI unavailable)",
+    "placeholder": "Ask about today's air…",
+    "send": "Send",
+    "speak": "Speak",
+    "readAloud": "Read aloud",
+    "copy": "Copy",
+    "trust": "Gemini writes the words; the engine supplies every number. Not medical advice.",
+    "sug1": "Is a purifier worth it for one room?",
+    "sug2": "Can Aarav play outside at 2 pm?",
+    "sug3": "How to build a DIY filter safely?"
+  },
+  "community": {
+    "title": "Community Kit",
+    "subtitle": "Ready-to-share go/no-go guidance for schools, RWAs, and workplaces.",
+    "orgType": "Organization type",
+    "school": "School",
+    "rwa": "Housing Society (RWA)",
+    "office": "Office / Campus",
+    "orgName": "Name",
+    "headcount": "People covered",
+    "printBtn": "Print A4 Notice",
+    "whatsappBtn": "Copy WhatsApp Text",
+    "copied": "Copied!",
+    "collective": "Estimated daily collective PM2.5 avoided",
+    "go": "Go",
+    "limit": "Limit",
+    "avoid": "Avoid",
+    "actionsTitle": "Evidence-rated community actions",
+    "tierHigh": "High evidence",
+    "tierLow": "Low short-term impact",
+    "act_no_burn": "Zero waste & leaf burning patrol",
+    "act_no_burn_note": "Directly stops intense local PM2.5 spikes.",
+    "act_dust": "Wet sweeping & covered construction sand",
+    "act_dust_note": "Cuts coarse and fine resuspended road dust.",
+    "act_idle": "School-gate engine-off zone",
+    "act_idle_note": "Lowers tailpipe plume exposure at drop-off/pick-up.",
+    "act_cr": "Classroom DIY CR Box filters",
+    "act_cr_note": "Immediate indoor PM2.5 drop during school hours.",
+    "act_trees": "Tree planting drives",
+    "act_trees_note": "Valuable long-term shade/ecology, but does NOT clear winter smog.",
+    "act_tower": "Outdoor smog towers",
+    "act_tower_note": "Very limited reach in open outdoor air compared to source control."
+  },
+  "proof": {
+    "title": "Proof, Assumptions & Myths",
+    "subtitle": "Where every number comes from, honest caveats, and verification results.",
+    "searchAssumptions": "Filter assumptions…",
+    "mythsTitle": "Myth or Fact",
+    "reportTitle": "Repo Verification Report",
+    "privacyTitle": "Privacy & Data Control"
+  },
+  "actions": {
+    "cr_box": {
+      "title": "Run a DIY Corsi-Rosenthal box filter in the bedroom",
+      "why": "Biggest single saving during 8–10 hours of sleep at home."
+    },
+    "hepa_purifier": {
+      "title": "Run a HEPA room purifier (no ionizer)",
+      "why": "Continuously lowers indoor PM2.5 when windows stay shut."
+    },
+    "commute_metro": {
+      "title": "Take the metro instead of open road transit",
+      "why": "Lower roadside plume exposure and much lower CO₂e."
+    },
+    "seal_gaps": {
+      "title": "Seal bedroom door and window gaps",
+      "why": "Reduces outdoor smog leaking into sleeping spaces."
+    },
+    "close_peak_windows": {
+      "title": "Keep windows shut during morning and evening peaks",
+      "why": "Blocks peak traffic and inversion smoke from entering."
+    },
+    "cook_hood_shift": {
+      "title": "Use exhaust hood and avoid peak-hour frying",
+      "why": "Captures cooking particles before they spread through the home."
+    },
+    "stop_incense_coil": {
+      "title": "Pause indoor incense and mosquito coils",
+      "why": "Eliminates concentrated indoor combustion PM2.5."
+    },
+    "n95_commute": {
+      "title": "Wear a well-fitted N95/FFP2 during transit",
+      "why": "Cuts inhaled particles by ~65–90% when outdoors (ages 2+ only)."
+    },
+    "shift_outdoor_timing": {
+      "title": "Move outdoor play or exercise to the cleaner afternoon dip",
+      "why": "Avoids heavy breathing during morning smog peaks."
+    },
+    "wet_mop": {
+      "title": "Wet-mop floors instead of dry sweeping",
+      "why": "Prevents settled dust from kicking back into indoor air."
+    }
+  },
+  "onboarding": {
+    "title": "Set up your family in 60 seconds",
+    "subtitle": "Everything stays in your browser. No account required.",
+    "cityLabel": "Search your city",
+    "search": "Search",
+    "useSharma": "Try the Sharma family (Delhi smog day)",
+    "useAhmedabad": "Try the Patel family (Ahmedabad winter day)",
+    "finish": "See our Breath Budget",
+    "replayTour": "Show quick tour"
+  },
+  "tutorial": {
+    "badge": "Quick Tour",
+    "welcome": "Welcome to Saans",
+    "step1Title": "1. Your Family's Breath Budget",
+    "step1Body": "Switch between family members (child, elder, commuter) on the Today tab. The gauge compares their 24-hour PM2.5 dose to the WHO 1× guideline, and the strip chart highlights the cleanest and worst hours.",
+    "step2Title": "2. Interactive Plan & Commute",
+    "step2Body": "Open the Plan tab to toggle actions on or off (DIY CR Box, metro commute, sealing gaps, kitchen hood) and watch your dose drop in real time. You can also compare commute options and export an .ics calendar.",
+    "step3Title": "3. Home Lab, Ask Saans & Community",
+    "step3Body": "Simulate room size and purifiers in Home Lab, scan a purifier label, ask Gemini questions (every number is computed by the engine, never guessed), and generate School or RWA advisories in Community.",
+    "step4Title": "4. Pick a Demo or Your City",
+    "step4Body": "Start with a pre-built Delhi or Ahmedabad winter simulation below, or search your own city anytime in Setup.",
+    "dontShow": "Do not show this again",
+    "back": "Back",
+    "next": "Next",
+    "done": "Start exploring",
+    "setupCity": "Search my city"
+  }
+}
