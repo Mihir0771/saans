@@ -32,8 +32,9 @@ For **Saans (सांस)**, I inverted the typical wrapper design: instead of 
 
 From `VERIFICATION_REPORT.md` (`npm run verify` — **PASS**):
 
-- **Unit, property & contract suite:** `154/154` tests passing across `17` files (`99.88%` statements, `90.33%` branches, `100%` functions)
+- **Unit, property & contract suite:** `159/159` tests passing across `18` files (`99.88%` statements, `90.62%` branches, `100%` functions)
 - **Offline AI safety evals:** `41/41` passing (covering prompt injection, unslotted digit rejection, banned ozone/combustion/child-mask blocks, and EN/HI fallbacks)
 - **Playwright E2E:** `2/2` passing across `mobile-360` (`360x800`) and `desktop-1280` (`1280x800`), `0` console errors, `0` horizontal overflow
-- **Axe WCAG 2.2 AA:** `2/2` passing across `mobile-360` and `desktop-1280` on Today, Plan, Home Lab, Ask, Community, Proof, and `/design` (`0` serious/critical violations)
-- **Repo hygiene (`npm run guard`):** `1.469 MB` (`143` files, `< 10 MB`), single branch `main`, `0` secrets
+- **Axe WCAG 2.2 AA:** `2/2` passing across `mobile-360` and `desktop-1280` on Welcome Tour, Today, Plan, Home Lab, Ask, Community, Proof, and `/design` (`0` serious/critical violations)
+- **Interactive & Multi-City:** Clickable/scrubbable 24-hour charts on Today, Plan, and Home Lab; 1-click Delhi (Sharma) & Ahmedabad (Patel) winter simulations alongside live Open-Meteo geocoding; First-Time Welcome Tour with `"Do not show this again"`; and optional BYOK Gemini key in Setup (header-only `x-gemini-api-key`, never logged or stored on server).
+- **Live deployment:** `https://saans-jet.vercel.app` (verified via `npm run smoke`)

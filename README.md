@@ -146,20 +146,20 @@ npm run smoke -- https://saans-jet.vercel.app       # post-deploy smoke test
 
 Copied from `VERIFICATION_REPORT.md` (`npm run verify` overall: **PASS**, `2026-11-25T13:46:42.768Z`, Node `v26.13.0`):
 
-| Check             | Status | Duration | Details                                                                                   |
-| ----------------- | ------ | -------- | ----------------------------------------------------------------------------------------- |
-| Repo guard        | PASS   | 515 ms   | 143 files checked, 1.469 MB (`< 10 MB`), 0 errors                                         |
-| Typecheck         | PASS   | 1751 ms  | `tsc --noEmit` — 0 errors                                                                 |
-| ESLint            | PASS   | 1783 ms  | `eslint .` — 0 errors, 0 warnings                                                         |
-| Prettier          | PASS   | 2349 ms  | All matched files use Prettier code style                                                 |
-| Vitest + coverage | PASS   | 4254 ms  | 17 test files, 154 tests passed (99.88% stmts, 90.33% branches, 100% funcs, 99.88% lines) |
-| Offline AI evals  | PASS   | 2421 ms  | 41/41 cases passed                                                                        |
-| Next.js build     | PASS   | 51623 ms | 12/12 routes built cleanly (`/` first-load JS 153 kB)                                     |
-| Playwright E2E    | PASS   | 15710 ms | 2 passed (`mobile-360`, `desktop-1280`, 0 console errors, 0 overflow)                     |
-| Axe A11y          | PASS   | 23725 ms | 2 passed (`mobile-360`, `desktop-1280`, 0 serious/critical WCAG 2.2 AA violations)        |
+| Check             | Status | Duration | Details                                                                                |
+| ----------------- | ------ | -------- | -------------------------------------------------------------------------------------- |
+| Repo guard        | PASS   | —        | `146` files checked, `< 10 MB`, `0` errors                                             |
+| Typecheck         | PASS   | —        | `tsc --noEmit` — `0` errors                                                            |
+| ESLint            | PASS   | —        | `eslint .` — `0` errors, `0` warnings                                                  |
+| Prettier          | PASS   | —        | All matched files use Prettier code style                                              |
+| Vitest + coverage | PASS   | —        | `18` test files, `159` tests passed (`99.88%` stmts, `90.62%` branches, `100%` funcs)  |
+| Offline AI evals  | PASS   | —        | `41/41` cases passed                                                                   |
+| Next.js build     | PASS   | —        | `12/12` routes built cleanly (`/` first-load JS `159 kB`)                              |
+| Playwright E2E    | PASS   | —        | `2` passed (`mobile-360`, `desktop-1280`, `0` console errors, `0` overflow)            |
+| Axe A11y          | PASS   | —        | `2` passed (`mobile-360`, `desktop-1280`, `0` serious/critical WCAG 2.2 AA violations) |
 
 - **Statements:** 99.88%
-- **Branches:** 90.33%
+- **Branches:** 90.62%
 - **Functions:** 100%
 - **Lines:** 99.88%
 

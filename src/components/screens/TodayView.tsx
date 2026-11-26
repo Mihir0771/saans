@@ -17,6 +17,7 @@ function formatFetchedTime(iso: string, locale: Locale): string {
     return new Intl.DateTimeFormat(locale === "hi" ? "hi-IN" : "en-IN", {
       hour: "numeric",
       minute: "2-digit",
+      timeZone: "Asia/Kolkata",
     }).format(new Date(iso));
   } catch {
     return "07:00";
