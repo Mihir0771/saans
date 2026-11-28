@@ -37,9 +37,9 @@ function StatusBanner({
   onClearCal: () => void;
 }) {
   const demoKey = demoBannerKey(demoKind, air.source);
-  if (demoKey) return <Banner label="Demo." text={t(locale, demoKey)} />;
+  if (demoKey) return <Banner label={t(locale, "banners.labelDemo")} text={t(locale, demoKey)} />;
   if (air.simulationTargetMean !== undefined)
-    return <Banner label="Simulation." text={t(locale, "banners.simulation")} />;
+    return <Banner label={t(locale, "banners.labelSim")} text={t(locale, "banners.simulation")} />;
   if (air.calibrationScale !== 1)
     return (
       <Banner
@@ -50,11 +50,15 @@ function StatusBanner({
       />
     );
   const offline = air.source === "offline-sample";
-  const label = offline ? "Offline." : air.stale ? "Stale." : "Live.";
+  const labelKey = offline
+    ? "banners.labelOffline"
+    : air.stale
+      ? "banners.labelStale"
+      : "banners.labelLive";
   const key = offline ? "banners.offline" : air.stale ? "banners.stale" : "today.modelEstimate";
   return (
     <Banner
-      label={label}
+      label={t(locale, labelKey)}
       text={t(locale, key)}
       actionLabel={t(locale, "banners.trySharma")}
       onAction={onTrySharma}
@@ -151,6 +155,11 @@ function AppTutorial({
   );
 }
 
+function formatPlaceLine(cityName: string, hours: AirBundle["hours"]): string {
+  const pmVal = hours[0]?.pm25;
+  return typeof pmVal === "number" ? `${cityName} · ${Math.round(pmVal)} µg/m³` : cityName;
+}
+
 export function SaansApp({ initialDemo = false }: { initialDemo?: DemoKind | false }) {
   const s = useSaansController(initialDemo);
   const { air, loadingAir } = useAirData(s.profile, s.demoKind, s.calibratePm, s.simMean);
@@ -168,7 +177,6 @@ export function SaansApp({ initialDemo = false }: { initialDemo?: DemoKind | fal
     setAutoPlayWhat(true);
     s.setTab("what");
   };
-  const pmLabel = air.hours[0]?.pm25 ? `${Math.round(air.hours[0].pm25)} µg/m³` : "";
   const banner = (
     <StatusBanner
       air={air}
@@ -186,7 +194,7 @@ export function SaansApp({ initialDemo = false }: { initialDemo?: DemoKind | fal
       onChangeLocale={s.changeLocale}
       theme={s.theme}
       onChangeTheme={s.changeTheme}
-      placeLine={`${s.profile.cityName} · ${pmLabel}`}
+      placeLine={formatPlaceLine(s.profile.cityName, air.hours)}
       banner={banner}
     >
       <SaansContent

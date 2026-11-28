@@ -24,6 +24,11 @@
     "onboarding": "Setup"
   },
   "banners": {
+    "labelDemo": "Demo.",
+    "labelSim": "Simulation.",
+    "labelOffline": "Offline.",
+    "labelStale": "Stale.",
+    "labelLive": "Live.",
     "demo": "Demo scenario. Illustrative numbers for the Sharma family — not live data.",
     "demoAhmedabad": "Demo scenario. Illustrative Ahmedabad winter numbers for the Patel family — not live data.",
     "simulation": "Simulation mode. Forecast shape scaled to chosen smog level.",
@@ -133,12 +138,14 @@
     "snapSub": "Take or upload a photo of your purifier or filter box. Photos are read in memory and never stored.",
     "snapUpload": "Upload label photo",
     "snapBusy": "Reading label…",
-    "snapApply": "Confirm & apply to Home Lab"
+    "snapApply": "Confirm & apply to Home Lab",
+    "snapError": "Could not read that label right now. Try a JPEG/PNG/WebP photo under 4 MB or enter CADR manually."
   },
   "ask": {
     "subtitle": "answers use your family and today's air",
     "verified": "✓ Numbers verified by engine",
     "offlineBadge": "Offline guidance (AI unavailable)",
+    "rateLimited": "Too many messages right now — please wait a minute and try again.",
     "placeholder": "Ask about today's air…",
     "send": "Send",
     "speak": "Speak",
@@ -152,6 +159,10 @@
   "community": {
     "title": "Community Kit",
     "subtitle": "Ready-to-share go/no-go guidance for schools, RWAs, and workplaces.",
+    "tableTitle": "24h Go / No-Go",
+    "colHour": "Hour",
+    "colPm25": "PM2.5",
+    "colActivity": "Activity",
     "orgType": "Organization type",
     "school": "School",
     "rwa": "Housing Society (RWA)",
@@ -236,6 +247,8 @@
     "subtitle": "Everything stays in your browser. No account required.",
     "cityLabel": "Search your city",
     "search": "Search",
+    "cityEmpty": "No matching cities found — try another spelling.",
+    "cityError": "City search temporarily unavailable.",
     "useSharma": "Try the Sharma family (Delhi smog day)",
     "useAhmedabad": "Try the Patel family (Ahmedabad winter day)",
     "finish": "See our Breath Budget",

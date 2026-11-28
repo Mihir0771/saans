@@ -122,6 +122,13 @@ function useWalkthroughController(locale: Locale, autoPlay: boolean) {
     setPlaying(playNow);
     if (playNow) speakChapter(sceneAtTime(tSec).index, locale, voiceOn);
   };
+  const togglePlay = () => {
+    if (!playing && secRef.current >= TOTAL_WALKTHROUGH_SEC - 0.05) {
+      jumpTo(0, true);
+      return;
+    }
+    setPlaying((v) => !v);
+  };
   const onDownload = () =>
     canvasRef.current &&
     recordWebmFromCanvas(
@@ -134,7 +141,7 @@ function useWalkthroughController(locale: Locale, autoPlay: boolean) {
     canvasRef,
     sec,
     playing,
-    setPlaying,
+    togglePlay,
     voiceOn,
     setVoiceOn,
     recording,
@@ -157,7 +164,7 @@ export function WalkthroughPlayer({
         canvasRef={c.canvasRef}
         sec={c.sec}
         locale={locale}
-        onTogglePlay={() => c.setPlaying((v) => !v)}
+        onTogglePlay={c.togglePlay}
         onSeek={(val) => c.jumpTo(val, c.playing)}
       />
       <PlayerControls
@@ -165,7 +172,7 @@ export function WalkthroughPlayer({
         voiceOn={c.voiceOn}
         recording={c.recording}
         locale={locale}
-        onTogglePlay={() => c.setPlaying((v) => !v)}
+        onTogglePlay={c.togglePlay}
         onReplay={() => c.jumpTo(0, true)}
         onToggleVoice={() => c.setVoiceOn((v) => !v)}
         onDownload={c.onDownload}

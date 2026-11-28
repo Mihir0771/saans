@@ -6,13 +6,13 @@
 |                     |                                                                                     |
 | ------------------- | ----------------------------------------------------------------------------------- |
 | **Live app**        | `https://saans-jet.vercel.app`                                                      |
-| **Demo video**      | `<VIDEO_URL>`                                                                       |
-| **Technical blog**  | `<BLOG_URL>`                                                                        |
-| **LinkedIn post**   | `<LINKEDIN_URL>`                                                                    |
+| **Demo video**      | `https://youtu.be/S2iQOJyw_bE?si=a1FvQ34thjpKZUld`                                  |
+| **Technical blog**  | [docs/submission/blog.md](docs/submission/blog.md)                                  |
+| **LinkedIn post**   | `https://lnkd.in/p/gYJCMhDu`                                                        |
 | **Chosen vertical** | Environmental health and clean-living assistant (urban India first, works globally) |
-| **Built with**      | Google Antigravity · Gemini API · Google Cloud Run · Next.js + TypeScript           |
+| **Built with**      | Google Antigravity · Gemini API · Next.js + TypeScript · Vercel (Cloud Run ready)   |
 
-> Fill the `<…>` placeholders and the **Verification** section from real outputs only (`VERIFICATION_REPORT.md`). Nothing in this README claims a test or score that the repo has not produced.
+> Every test count, coverage figure, and check result in this README comes directly from running `npm run verify` (`VERIFICATION_REPORT.md`). Nothing claims a test or score that the repo has not produced.
 
 ---
 
@@ -144,34 +144,34 @@ npm run smoke -- https://saans-jet.vercel.app       # post-deploy smoke test
 
 ### Verification (generated)
 
-Copied from `VERIFICATION_REPORT.md` (`npm run verify` overall: **PASS**, `2026-11-26T07:24:58.176Z`, Node `v26.13.0`):
+Copied from `VERIFICATION_REPORT.md` (`npm run verify` overall: **PASS**, `2026-11-28T17:42:37.018Z`, Node `v26.13.0`):
 
-> **Latest Challenge Highlights:** First-Time Welcome Tour (`"Do not show this again"` -> `"What is this?"` 60 FPS interactive guide), 1-click **Ahmedabad (Patel family)** winter simulation alongside Delhi, **clickable/scrubbable 24h charts** on Today/Plan/Home Lab, and optional **BYOK Gemini API key** in Setup (header-only `x-gemini-api-key`, stored only in browser `localStorage`).
+> **Latest Release & QA Highlights:** First-Time Welcome Tour (`"Do not show this again"` -> `"What is this?"` 60 FPS interactive guide with clean end-state replay), 1-click **Ahmedabad (Patel family)** winter simulation alongside Delhi, **clickable/scrubbable 24h charts** on Today/Plan/Home Lab, optional **BYOK Gemini API key** in Setup (header-only `x-gemini-api-key`, stored only in browser `localStorage`), live Open-Meteo 72h today-slice alignment (`indices 24..47`), midnight-safe `.ics` calendar export, and full EN/HI banner & table localization.
 
 | Check             | Status | Duration | Details                                                                                |
 | ----------------- | ------ | -------- | -------------------------------------------------------------------------------------- |
-| Repo guard        | PASS   | 436 ms   | `159` files checked, `3.727 MB` (`< 10 MB`), single branch `main`, `0` errors          |
-| Typecheck         | PASS   | 1682 ms  | `tsc --noEmit` — `0` errors                                                            |
-| ESLint            | PASS   | 2407 ms  | `eslint .` — `0` errors, `0` warnings                                                  |
-| Prettier          | PASS   | 1830 ms  | All matched files use Prettier code style                                              |
-| Vitest + coverage | PASS   | 4079 ms  | `19` test files, `160` tests passed (`99.88%` stmts, `90.62%` branches, `100%` funcs)  |
-| Offline AI evals  | PASS   | 2474 ms  | `41/41` cases passed                                                                   |
-| Next.js build     | PASS   | 29605 ms | `12/12` routes built cleanly (`/` first-load JS `166 kB`)                              |
-| Playwright E2E    | PASS   | 5957 ms  | `2` passed (`mobile-360`, `desktop-1280`, `0` console errors, `0` overflow)            |
-| Axe A11y          | PASS   | 11536 ms | `2` passed (`mobile-360`, `desktop-1280`, `0` serious/critical WCAG 2.2 AA violations) |
+| Repo guard        | PASS   | 523 ms   | `159` files checked, `3.748 MB` (`< 10 MB`), single branch `main`, `0` errors          |
+| Typecheck         | PASS   | 1873 ms  | `tsc --noEmit` — `0` errors                                                            |
+| ESLint            | PASS   | 1861 ms  | `eslint .` — `0` errors, `0` warnings                                                  |
+| Prettier          | PASS   | 1891 ms  | All matched files use Prettier code style                                              |
+| Vitest + coverage | PASS   | 3661 ms  | `20` test files, `162` tests passed (`99.88%` stmts, `90.55%` branches, `100%` funcs)  |
+| Offline AI evals  | PASS   | 2259 ms  | `41/41` cases passed                                                                   |
+| Next.js build     | PASS   | 48500 ms | `12/12` routes built cleanly (`/` first-load JS `167 kB`)                              |
+| Playwright E2E    | PASS   | 8424 ms  | `2` passed (`mobile-360`, `desktop-1280`, `0` console errors, `0` overflow)            |
+| Axe A11y          | PASS   | 12536 ms | `2` passed (`mobile-360`, `desktop-1280`, `0` serious/critical WCAG 2.2 AA violations) |
 
 - **Statements:** 99.88%
-- **Branches:** 90.62%
+- **Branches:** 90.55%
 - **Functions:** 100%
 - **Lines:** 99.88%
 
-> Note: Live deployment is verified at `https://saans-jet.vercel.app` via `npm run smoke`; repository is public on a single branch `main` (`3.727 MB < 10 MB`); `<VIDEO_URL>` / `<BLOG_URL>` / `<LINKEDIN_URL>` remain placeholders until published.
+> Note: Live deployment is verified at `https://saans-jet.vercel.app` via `npm run smoke` (all 6 API checks HTTP 200); repository is public on a single branch `main` (`< 10 MB`), with published demo video (`https://youtu.be/S2iQOJyw_bE?si=a1FvQ34thjpKZUld`) and LinkedIn post (`https://lnkd.in/p/gYJCMhDu`).
 
 ## 13. Google technologies used
 
 - **Google Antigravity:** agent-first development with plans, task lists, browser verification and recordings (evidence in `docs/build-journal/`).
-- **Gemini API:** structured output, function calling, vision, and optional Google Search grounding.
-- **Google Cloud Run and Secret Manager:** deployment and secrets.
+- **Gemini API:** `@google/genai` (`client.interactions.create`) for structured output (`/api/explain`), multi-tool chat (`/api/chat`), and in-memory purifier label vision (`/api/vision`) with `guard.ts` number verification.
+- **Deployment & secrets readiness:** live on Vercel (`https://saans-jet.vercel.app`) with multi-stage Cloud Run `Dockerfile` and environment-based secrets ready.
 
 ## 14. How AI was used to build this
 
@@ -183,4 +183,4 @@ Saans is not a medical device and does not replace a doctor's asthma or heart-co
 
 ## 16. Licence and attribution
 
-Air-quality data: CAMS ENSEMBLE / CAMS global via Open-Meteo. Licence for this code: `<MIT or your choice>`.
+Air-quality data: CAMS ENSEMBLE / CAMS global via Open-Meteo. Licence for this code: MIT.

@@ -71,10 +71,20 @@ function CitySearchBar({
   );
 }
 
-async function fetchCityMatches(query: string): Promise<CityMatch[]> {
-  if (query.trim().length < 2) return [];
-  const data = await (await fetch(`/api/air?q=${encodeURIComponent(query.trim())}`)).json();
-  return data.results ?? [];
+async function fetchCityMatches(
+  query: string,
+  locale: Locale,
+): Promise<{ results: CityMatch[]; note: string | null }> {
+  if (query.trim().length < 2) return { results: [], note: null };
+  try {
+    const res = await fetch(`/api/air?q=${encodeURIComponent(query.trim())}`);
+    if (!res.ok) return { results: [], note: t(locale, "onboarding.cityError") };
+    const data = (await res.json()) as { results?: CityMatch[] };
+    const results = data.results ?? [];
+    return { results, note: results.length === 0 ? t(locale, "onboarding.cityEmpty") : null };
+  } catch {
+    return { results: [], note: t(locale, "onboarding.cityError") };
+  }
 }
 
 interface OnboardingProps {
@@ -163,10 +173,57 @@ function GeminiKeyCard({ locale }: { locale: Locale }) {
   );
 }
 
+function CitySetupCard(p: {
+  props: OnboardingProps;
+  cityQuery: string;
+  matches: CityMatch[];
+  searchNote: string | null;
+  selected: CityMatch;
+  onQuery: (q: string) => void;
+  onSearch: () => void;
+  onPick: (m: CityMatch) => void;
+}) {
+  const locale = p.props.profile.locale;
+  return (
+    <Card>
+      <h1 className="text-xl font-bold text-ink">{t(locale, "onboarding.title")}</h1>
+      <p className="mt-1 text-sm text-ink-2">{t(locale, "onboarding.subtitle")}</p>
+      <div className="mt-4 grid gap-3">
+        <DemoPickers
+          locale={locale}
+          onSharma={p.props.onUseSharmaDemo}
+          onAhmedabad={p.props.onUseAhmedabadDemo}
+        />
+        <CitySearchBar
+          value={p.cityQuery}
+          label={t(locale, "onboarding.cityLabel")}
+          searchLabel={t(locale, "onboarding.search")}
+          onChange={p.onQuery}
+          onSearch={p.onSearch}
+        />
+        {p.searchNote ? (
+          <p role="status" className="text-xs text-ink-2">
+            {p.searchNote}
+          </p>
+        ) : null}
+        <CityMatchesList matches={p.matches} selectedName={p.selected.name} onPick={p.onPick} />
+        <Button
+          variant="primary"
+          onClick={() => p.props.onSaveProfile(buildSavedProfile(p.props.profile, p.selected))}
+        >
+          {t(locale, "onboarding.finish")}
+        </Button>
+        <Button onClick={p.props.onOpenTutorial}>{t(locale, "onboarding.replayTour")}</Button>
+      </div>
+    </Card>
+  );
+}
+
 export function OnboardingView(p: OnboardingProps) {
   const locale = p.profile.locale;
   const [cityQuery, setCityQuery] = useState(p.profile.cityName);
   const [matches, setMatches] = useState<CityMatch[]>([]);
+  const [searchNote, setSearchNote] = useState<string | null>(null);
   const [selected, setSelected] = useState<CityMatch>({
     name: p.profile.cityName,
     lat: p.profile.lat,
@@ -176,36 +233,25 @@ export function OnboardingView(p: OnboardingProps) {
     setSelected(m);
     setCityQuery(m.name);
     setMatches([]);
+    setSearchNote(null);
   };
-
+  const runSearch = async () => {
+    const out = await fetchCityMatches(cityQuery, locale);
+    setMatches(out.results);
+    setSearchNote(out.note);
+  };
   return (
     <div className="mx-auto grid max-w-xl gap-4">
-      <Card>
-        <h1 className="text-xl font-bold text-ink">{t(locale, "onboarding.title")}</h1>
-        <p className="mt-1 text-sm text-ink-2">{t(locale, "onboarding.subtitle")}</p>
-        <div className="mt-4 grid gap-3">
-          <DemoPickers
-            locale={locale}
-            onSharma={p.onUseSharmaDemo}
-            onAhmedabad={p.onUseAhmedabadDemo}
-          />
-          <CitySearchBar
-            value={cityQuery}
-            label={t(locale, "onboarding.cityLabel")}
-            searchLabel={t(locale, "onboarding.search")}
-            onChange={setCityQuery}
-            onSearch={() => fetchCityMatches(cityQuery).then(setMatches)}
-          />
-          <CityMatchesList matches={matches} selectedName={selected.name} onPick={pick} />
-          <Button
-            variant="primary"
-            onClick={() => p.onSaveProfile(buildSavedProfile(p.profile, selected))}
-          >
-            {t(locale, "onboarding.finish")}
-          </Button>
-          <Button onClick={p.onOpenTutorial}>{t(locale, "onboarding.replayTour")}</Button>
-        </div>
-      </Card>
+      <CitySetupCard
+        props={p}
+        cityQuery={cityQuery}
+        matches={matches}
+        searchNote={searchNote}
+        selected={selected}
+        onQuery={setCityQuery}
+        onSearch={runSearch}
+        onPick={pick}
+      />
       <GeminiKeyCard locale={locale} />
     </div>
   );

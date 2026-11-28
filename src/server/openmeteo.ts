@@ -56,31 +56,39 @@ function parseHourLocal(iso: string, fallback: number): number {
   return Number.parseInt(m[1], 10) % 24;
 }
 
+function buildAirHour(
+  aq: z.infer<typeof OpenMeteoAqSchema>,
+  weather: z.infer<typeof OpenMeteoWeatherSchema> | undefined,
+  idx: number,
+  i: number,
+): AirHour {
+  const iso = aq.hourly.time[idx] ?? "";
+  return {
+    isoTime: iso,
+    hourLocal: parseHourLocal(iso, i),
+    pm25: Math.max(0, numAt(aq.hourly.pm2_5, idx) ?? 0),
+    pm10: Math.max(0, numAt(aq.hourly.pm10, idx) ?? 0),
+    no2: numAt(aq.hourly.nitrogen_dioxide, idx),
+    o3: numAt(aq.hourly.ozone, idx),
+    co_ugm3: numAt(aq.hourly.carbon_monoxide, idx),
+    usAqi: numAt(aq.hourly.us_aqi, idx),
+    tempC: numAt(weather?.hourly.temperature_2m, idx),
+    rhPct: numAt(weather?.hourly.relative_humidity_2m, idx),
+    windMs: numAt(weather?.hourly.wind_speed_10m, idx),
+    blhM: numAt(weather?.hourly.boundary_layer_height, idx),
+    precipMm: numAt(weather?.hourly.precipitation, idx),
+  };
+}
+
 export function mapOpenMeteoToHours(
   aq: z.infer<typeof OpenMeteoAqSchema>,
   weather?: z.infer<typeof OpenMeteoWeatherSchema>,
 ): AirHour[] {
-  const start = Math.max(0, aq.hourly.time.length - 72);
+  const start = aq.hourly.time.length >= 48 ? 24 : 0;
   const sliceLen = Math.min(24, aq.hourly.time.length - start);
   const hours: AirHour[] = [];
   for (let i = 0; i < sliceLen; i += 1) {
-    const idx = start + i;
-    const iso = aq.hourly.time[idx] ?? "";
-    hours.push({
-      isoTime: iso,
-      hourLocal: parseHourLocal(iso, i),
-      pm25: Math.max(0, numAt(aq.hourly.pm2_5, idx) ?? 0),
-      pm10: Math.max(0, numAt(aq.hourly.pm10, idx) ?? 0),
-      no2: numAt(aq.hourly.nitrogen_dioxide, idx),
-      o3: numAt(aq.hourly.ozone, idx),
-      co_ugm3: numAt(aq.hourly.carbon_monoxide, idx),
-      usAqi: numAt(aq.hourly.us_aqi, idx),
-      tempC: numAt(weather?.hourly.temperature_2m, idx),
-      rhPct: numAt(weather?.hourly.relative_humidity_2m, idx),
-      windMs: numAt(weather?.hourly.wind_speed_10m, idx),
-      blhM: numAt(weather?.hourly.boundary_layer_height, idx),
-      precipMm: numAt(weather?.hourly.precipitation, idx),
-    });
+    hours.push(buildAirHour(aq, weather, start + i, i));
   }
   return hours;
 }

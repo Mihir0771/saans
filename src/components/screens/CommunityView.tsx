@@ -11,6 +11,12 @@ import type { AirBundle, Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
 import { Button, Card } from "../ui/Primitives";
 
+function statusText(s: HourlyActivityDecision["status"], locale: Locale): string {
+  if (s === "go") return `✓ ${t(locale, "community.go")}`;
+  if (s === "limit") return `◐ ${t(locale, "community.limit")}`;
+  return `✕ ${t(locale, "community.avoid")}`;
+}
+
 function GoNoGoTable({
   orgName,
   decisions,
@@ -20,27 +26,23 @@ function GoNoGoTable({
   decisions: HourlyActivityDecision[];
   locale: Locale;
 }) {
-  const statusText = (s: HourlyActivityDecision["status"]) =>
-    s === "go"
-      ? `✓ ${t(locale, "community.go")}`
-      : s === "limit"
-        ? `◐ ${t(locale, "community.limit")}`
-        : `✕ ${t(locale, "community.avoid")}`;
   return (
     <Card>
-      <h2 className="text-lg font-bold text-ink">{orgName} · 24h Go / No-Go</h2>
+      <h2 className="text-lg font-bold text-ink">
+        {orgName} · {t(locale, "community.tableTitle")}
+      </h2>
       <div className="mt-3 overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-divider text-left text-ink-2">
               <th scope="col" className="py-1.5 pr-3">
-                Hour
+                {t(locale, "community.colHour")}
               </th>
               <th scope="col" className="py-1.5 pr-3">
-                PM2.5
+                {t(locale, "community.colPm25")}
               </th>
               <th scope="col" className="py-1.5">
-                Activity
+                {t(locale, "community.colActivity")}
               </th>
             </tr>
           </thead>
@@ -51,7 +53,7 @@ function GoNoGoTable({
                 <tr key={d.hour} className="border-b border-divider">
                   <td className="py-1 pr-3 font-num">{String(d.hour).padStart(2, "0")}:00</td>
                   <td className="py-1 pr-3 font-num">{d.pm25} µg/m³</td>
-                  <td className="py-1 font-bold">{statusText(d.status)}</td>
+                  <td className="py-1 font-bold">{statusText(d.status, locale)}</td>
                 </tr>
               ))}
           </tbody>

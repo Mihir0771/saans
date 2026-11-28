@@ -6,23 +6,24 @@ function pad2(n: number): string {
 }
 
 function icsStamp(date: Date, hour: number, minute = 0): string {
-  const y = date.getFullYear();
-  const m = pad2(date.getMonth() + 1);
-  const d = pad2(date.getDate());
-  return `${y}${m}${d}T${pad2(hour)}${pad2(minute)}00`;
+  const resolved = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute, 0);
+  const y = resolved.getFullYear();
+  const m = pad2(resolved.getMonth() + 1);
+  const d = pad2(resolved.getDate());
+  return `${y}${m}${d}T${pad2(resolved.getHours())}${pad2(resolved.getMinutes())}00`;
 }
 
 function formatEvent(
   now: Date,
   idx: number,
-  ev: { startH: number; startM: number; endH: number; endM: number; title: string; desc: string },
+  ev: { startH: number; startM: number; durationMin: number; title: string; desc: string },
 ): string[] {
   return [
     "BEGIN:VEVENT",
     `UID:saans-${idx}-${now.getTime()}@saans.local`,
     `DTSTAMP:${icsStamp(now, now.getHours(), now.getMinutes())}`,
     `DTSTART:${icsStamp(now, ev.startH, ev.startM)}`,
-    `DTEND:${icsStamp(now, ev.endH, ev.endM)}`,
+    `DTEND:${icsStamp(now, ev.startH, ev.startM + ev.durationMin)}`,
     `SUMMARY:${ev.title}`,
     `DESCRIPTION:${ev.desc}`,
     "END:VEVENT",
@@ -41,16 +42,14 @@ export function buildPlanIcs(input: {
     {
       startH: input.windows.worstStartHour,
       startM: 0,
-      endH: (input.windows.worstStartHour + 2) % 24,
-      endM: 0,
+      durationMin: 120,
       title: `Saans: Keep windows shut (${input.cityName})`,
       desc: `Peak PM2.5 window (~${input.windows.worstMeanPm25} µg/m³). Use N95 in transit if stepping out.`,
     },
     {
       startH: input.windows.bestStartHour,
       startM: 0,
-      endH: (input.windows.bestStartHour + 1) % 24,
-      endM: 0,
+      durationMin: 60,
       title: `Saans: Cleaner outdoor window (${input.memberName})`,
       desc: `Best daily outdoor window (~${input.windows.bestMeanPm25} µg/m³). Target Breath Budget: ${input.plan.plan.ratio.toFixed(1)}× WHO.`,
     },
@@ -59,8 +58,7 @@ export function buildPlanIcs(input: {
     events.push({
       startH: input.ventilation.startHour,
       startM: 0,
-      endH: input.ventilation.startHour,
-      endM: input.ventilation.durationMin,
+      durationMin: input.ventilation.durationMin,
       title: "Saans: 20-min Smart Ventilation Window",
       desc: `Open windows for ${input.ventilation.durationMin} minutes to flush indoor PM2.5.`,
     });

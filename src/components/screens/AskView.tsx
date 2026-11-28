@@ -136,16 +136,24 @@ async function postChatMessage(body: Record<string, unknown>, locale: Locale): P
     const userKey = loadUserGeminiKey();
     const headers: Record<string, string> = { "content-type": "application/json" };
     if (userKey) headers["x-gemini-api-key"] = userKey;
-    const data = await (
-      await fetch("/api/chat", {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body),
-      })
-    ).json();
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+    const data = (await res.json().catch(() => ({}))) as {
+      reply?: string;
+      verifiedByEngine?: boolean;
+      offlineFallback?: boolean;
+      facts?: Record<string, FactItem>;
+    };
+    if (!res.ok || !data.reply) {
+      const msgKey = res.status === 429 ? "ask.rateLimited" : "ask.offlineBadge";
+      return { role: "assistant", text: t(locale, msgKey), offlineFallback: true };
+    }
     return {
       role: "assistant",
-      text: data.reply ?? t(locale, "ask.offlineBadge"),
+      text: data.reply,
       verified: Boolean(data.verifiedByEngine),
       offlineFallback: Boolean(data.offlineFallback),
       facts: data.facts ?? {},
