@@ -144,26 +144,28 @@ npm run smoke -- https://saans-jet.vercel.app       # post-deploy smoke test
 
 ### Verification (generated)
 
-Copied from `VERIFICATION_REPORT.md` (`npm run verify` overall: **PASS**, `2026-11-25T13:46:42.768Z`, Node `v26.13.0`):
+Copied from `VERIFICATION_REPORT.md` (`npm run verify` overall: **PASS**, `2026-11-26T07:24:58.176Z`, Node `v26.13.0`):
+
+> **Latest Challenge Highlights:** First-Time Welcome Tour (`"Do not show this again"` -> `"What is this?"` 60 FPS interactive guide), 1-click **Ahmedabad (Patel family)** winter simulation alongside Delhi, **clickable/scrubbable 24h charts** on Today/Plan/Home Lab, and optional **BYOK Gemini API key** in Setup (header-only `x-gemini-api-key`, stored only in browser `localStorage`).
 
 | Check             | Status | Duration | Details                                                                                |
 | ----------------- | ------ | -------- | -------------------------------------------------------------------------------------- |
-| Repo guard        | PASS   | —        | `146` files checked, `< 10 MB`, `0` errors                                             |
-| Typecheck         | PASS   | —        | `tsc --noEmit` — `0` errors                                                            |
-| ESLint            | PASS   | —        | `eslint .` — `0` errors, `0` warnings                                                  |
-| Prettier          | PASS   | —        | All matched files use Prettier code style                                              |
-| Vitest + coverage | PASS   | —        | `18` test files, `159` tests passed (`99.88%` stmts, `90.62%` branches, `100%` funcs)  |
-| Offline AI evals  | PASS   | —        | `41/41` cases passed                                                                   |
-| Next.js build     | PASS   | —        | `12/12` routes built cleanly (`/` first-load JS `159 kB`)                              |
-| Playwright E2E    | PASS   | —        | `2` passed (`mobile-360`, `desktop-1280`, `0` console errors, `0` overflow)            |
-| Axe A11y          | PASS   | —        | `2` passed (`mobile-360`, `desktop-1280`, `0` serious/critical WCAG 2.2 AA violations) |
+| Repo guard        | PASS   | 436 ms   | `159` files checked, `3.727 MB` (`< 10 MB`), single branch `main`, `0` errors          |
+| Typecheck         | PASS   | 1682 ms  | `tsc --noEmit` — `0` errors                                                            |
+| ESLint            | PASS   | 2407 ms  | `eslint .` — `0` errors, `0` warnings                                                  |
+| Prettier          | PASS   | 1830 ms  | All matched files use Prettier code style                                              |
+| Vitest + coverage | PASS   | 4079 ms  | `19` test files, `160` tests passed (`99.88%` stmts, `90.62%` branches, `100%` funcs)  |
+| Offline AI evals  | PASS   | 2474 ms  | `41/41` cases passed                                                                   |
+| Next.js build     | PASS   | 29605 ms | `12/12` routes built cleanly (`/` first-load JS `166 kB`)                              |
+| Playwright E2E    | PASS   | 5957 ms  | `2` passed (`mobile-360`, `desktop-1280`, `0` console errors, `0` overflow)            |
+| Axe A11y          | PASS   | 11536 ms | `2` passed (`mobile-360`, `desktop-1280`, `0` serious/critical WCAG 2.2 AA violations) |
 
 - **Statements:** 99.88%
 - **Branches:** 90.62%
 - **Functions:** 100%
 - **Lines:** 99.88%
 
-> Note: Live deployment is verified at `https://saans-jet.vercel.app` via `npm run smoke`; `<VIDEO_URL>` / `<BLOG_URL>` / `<LINKEDIN_URL>` remain placeholders until published.
+> Note: Live deployment is verified at `https://saans-jet.vercel.app` via `npm run smoke`; repository is public on a single branch `main` (`3.727 MB < 10 MB`); `<VIDEO_URL>` / `<BLOG_URL>` / `<LINKEDIN_URL>` remain placeholders until published.
 
 ## 13. Google technologies used
 
