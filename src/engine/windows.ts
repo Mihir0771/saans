@@ -69,6 +69,10 @@ function sumArray(arr: number[]): number {
   return arr.reduce((s, v) => s + v, 0);
 }
 
+/**
+ * Identifies the cleanest candidate 20-minute window (08:00–18:00) where opening windows
+ * reduces cumulative indoor PM2.5 mass compared to staying sealed.
+ */
 export function findSmartVentilationWindow(
   home: HomeProfile,
   hours: AirHour[],

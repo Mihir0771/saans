@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { computeFullPlan } from "@/engine/plan";
 import { AirBundleSchema, HouseholdProfileSchema, LocaleSchema } from "@/engine/schema";
 import { resolveDemoInputs } from "@/lib/ahmedabad-fixture";
 import { generateGuardedChat } from "@/server/ai-service";
 import { extractUserGeminiKey } from "@/server/gemini";
-import { checkRateLimit, clientIpFromHeaders } from "@/server/ratelimit";
+import { enforceRouteRateLimit, jsonNoStore, parseJsonRequest } from "@/server/http";
 
 const ChatRequestSchema = z.object({
   message: z.string().min(1).max(500),
@@ -25,35 +25,34 @@ const ChatRequestSchema = z.object({
     .default([]),
 });
 
+/**
+ * Handles grounded Ask Saans chat turns: validates input, computes an engine
+ * FactSheet, runs Gemini function calling + slot substitution, and falls back
+ * deterministically if AI is unavailable or blocked by `guard.ts`.
+ */
 export async function POST(req: NextRequest) {
-  const ip = clientIpFromHeaders(req.headers);
-  if (!checkRateLimit(`chat:${ip}`, 20)) {
-    return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
-  }
+  const blocked = enforceRouteRateLimit(req, "chat", 20);
+  if (blocked) return blocked;
 
-  const body = await req.json().catch(() => null);
-  const parsed = ChatRequestSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid chat request" }, { status: 400 });
-  }
+  const parsed = await parseJsonRequest(req, ChatRequestSchema, "Invalid chat request");
+  if (!parsed.ok) return parsed.response;
 
   const d = parsed.data;
   const resolved = resolveDemoInputs(d.demo, d.profile, d.air);
   const profile = { ...resolved.profile, locale: d.locale };
-  const air = resolved.air;
-  const full = computeFullPlan(profile, air, d.focusMemberId);
+  const full = computeFullPlan(profile, resolved.air, d.focusMemberId);
   const focusMemberId = d.focusMemberId ?? profile.members[0]?.id ?? "aarav";
 
   const result = await generateGuardedChat({
     message: d.message,
     history: d.history,
     profile,
-    air,
+    air: resolved.air,
     factSheet: full.factSheet,
     focusMemberId,
     locale: d.locale,
     apiKey: extractUserGeminiKey(req.headers),
   });
 
-  return NextResponse.json(result);
+  return jsonNoStore(result);
 }

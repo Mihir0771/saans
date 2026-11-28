@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import type { FactItem, Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
+import { DialogFrame } from "./DialogFrame";
 import { Button } from "./Primitives";
 
 export interface MathDetail {
@@ -26,9 +27,9 @@ function MathContent({
   return (
     <div className="space-y-3">
       <div className="flex items-start justify-between gap-2">
-        <h1 id="math-drawer-title" className="text-lg font-bold text-ink">
+        <h2 id="math-drawer-title" className="text-lg font-bold text-ink">
           {detail.title}
-        </h1>
+        </h2>
         <Button variant="ghost" onClick={onClose} aria-label={t(locale, "app.close")}>
           ✕
         </Button>
@@ -46,6 +47,7 @@ function MathContent({
   );
 }
 
+/** Accessible modal drawer explaining engine formulas and data sources. */
 export function MathDrawer({
   detail,
   locale,
@@ -55,37 +57,14 @@ export function MathDrawer({
   locale: Locale;
   onClose: () => void;
 }) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useEffect(() => {
-    const dlg = dialogRef.current;
-    if (!dlg) return;
-    if (detail && !dlg.open) dlg.showModal();
-    else if (!detail && dlg.open) dlg.close();
-  }, [detail]);
-
-  useEffect(() => {
-    const dlg = dialogRef.current;
-    if (!dlg || "closedBy" in HTMLDialogElement.prototype) return undefined;
-    const onPointerDown = (e: MouseEvent) => {
-      if (e.target !== dlg) return;
-      const r = dlg.getBoundingClientRect();
-      if (e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right)
-        dlg.close();
-    };
-    dlg.addEventListener("click", onPointerDown);
-    return () => dlg.removeEventListener("click", onPointerDown);
-  }, []);
-
   return (
-    <dialog
-      ref={dialogRef}
-      {...({ closedby: "any" } as Record<string, string>)}
-      aria-labelledby="math-drawer-title"
+    <DialogFrame
+      open={Boolean(detail)}
+      labelledBy="math-drawer-title"
       onClose={onClose}
       className="m-auto w-[min(460px,calc(100vw-24px))] rounded-lg border border-divider bg-surface p-5 text-ink shadow-[var(--shadow-2)]"
     >
       {detail ? <MathContent detail={detail} locale={locale} onClose={onClose} /> : null}
-    </dialog>
+    </DialogFrame>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
+import { pointerRatioInSvg } from "@/lib/svg-pointer";
 
 const BOX = { l: 34, r: 326, t: 14, b: 156 };
 
@@ -94,10 +95,7 @@ function LabScrubReadout({
 }
 
 function labHourFromPointer(e: React.PointerEvent<SVGSVGElement>): number {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const svgX = ((e.clientX - rect.left) / rect.width) * 336;
-  const clamped = Math.max(BOX.l, Math.min(BOX.r, svgX));
-  return Math.round(((clamped - BOX.l) / (BOX.r - BOX.l)) * 23);
+  return Math.round(pointerRatioInSvg(e, 336, BOX.l, BOX.r) * 23);
 }
 
 interface PlotProps {
@@ -125,10 +123,12 @@ function IndoorBandPlot(p: PlotProps) {
       className="block h-auto w-full cursor-crosshair select-none"
       viewBox="0 0 336 184"
       role="img"
-      aria-label="24-hour indoor vs outdoor PM2.5 simulation"
+      aria-labelledby="labChartTitle labChartDesc"
       onPointerDown={p.onPointer}
       onPointerMove={p.onPointer}
     >
+      <title id="labChartTitle">{t(p.locale, "lab.title")}</title>
+      <desc id="labChartDesc">{t(p.locale, "lab.subtitle")}</desc>
       <LabGrid maxY={maxY} y={y} />
       <polygon points={poly} fill="var(--brand-soft)" opacity="0.7" />
       <polyline

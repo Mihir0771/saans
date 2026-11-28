@@ -92,6 +92,10 @@ function buildFactsMap(
   };
 }
 
+/**
+ * Builds the flat, engine-verified `FactSheet` object passed to Gemini.
+ * Every numeric claim rendered by `/api/explain` or `/api/chat` must trace back to a slot here.
+ */
 export function buildFactSheet(input: FactSheetBuildInput): FactSheet {
   const nowHour = input.hours[0] ?? { isoTime: "", hourLocal: 0, pm25: 100, pm10: 150 };
   const aqiNow = computeAqiNowEquivalent(nowHour);

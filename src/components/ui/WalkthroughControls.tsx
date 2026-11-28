@@ -51,7 +51,11 @@ export function ChapterPills({
   onJump: (idx: number) => void;
 }) {
   return (
-    <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Walkthrough chapters">
+    <div
+      className="mt-3 flex flex-wrap gap-1.5"
+      role="group"
+      aria-label={t(locale, "what.chaptersGroup")}
+    >
       {WALKTHROUGH_SCENES.map((sc, idx) => (
         <Button
           key={sc.id}

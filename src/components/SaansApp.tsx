@@ -88,7 +88,9 @@ function SaansContent({
 }) {
   return (
     <>
-      {loadingAir && !air.hours.length ? <SkeletonCard /> : null}
+      {loadingAir && !air.hours.length ? (
+        <SkeletonCard label={t(s.profile.locale, "app.loading")} />
+      ) : null}
       <TabBody
         tab={s.tab}
         profile={s.profile}

@@ -7,10 +7,14 @@ export interface GrapStatus {
   caqmUrl: string;
 }
 
+/** Returns true when `(lat, lon)` falls inside the Delhi-NCR bounding box. */
 export function isDelhiNcr(lat: number, lon: number): boolean {
   return lat >= 28.2 && lat <= 28.95 && lon >= 76.75 && lon <= 77.65;
 }
 
+/**
+ * Maps current AQI to an indicative Delhi-NCR GRAP stage (`null` outside NCR or when AQI <= 200).
+ */
 export function computeGrapStatus(lat: number, lon: number, aqi: number): GrapStatus | null {
   if (!isDelhiNcr(lat, lon) || aqi <= 200) return null;
 

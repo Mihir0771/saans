@@ -32,7 +32,7 @@ For **Saans (सांस)**, I inverted the typical wrapper design: instead of 
 
 From `VERIFICATION_REPORT.md` (`npm run verify` — **PASS**):
 
-- **Unit, property & contract suite:** `162/162` tests passing across `20` files (`99.88%` statements, `90.55%` branches, `100%` functions)
+- **Unit, property & contract suite:** `163/163` tests passing across `20` files (`99.88%` statements, `90.53%` branches, `100%` functions)
 - **Offline AI safety evals:** `41/41` passing (covering prompt injection, unslotted digit rejection, banned ozone/combustion/child-mask blocks, and EN/HI fallbacks)
 - **Playwright E2E:** `2/2` passing across `mobile-360` (`360x800`) and `desktop-1280` (`1280x800`), `0` console errors, `0` horizontal overflow
 - **Axe WCAG 2.2 AA:** `2/2` passing across `mobile-360` and `desktop-1280` on Welcome Tour, Today, Plan, Home Lab, Ask, Community, Proof, and `/design` (`0` serious/critical violations)

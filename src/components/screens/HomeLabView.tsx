@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { simulateIndoor24h } from "@/engine/indoor";
 import type { AirBundle, HouseholdProfile, Locale } from "@/engine/schema";
 import { findSmartVentilationWindow } from "@/engine/windows";
@@ -21,6 +21,26 @@ function VentilationCard({ locale, text }: { locale: Locale; text: string }) {
   );
 }
 
+function useLabSimulation(profile: HouseholdProfile, air: AirBundle) {
+  const outdoor = useMemo(() => air.hours.slice(0, 24).map((h) => h.pm25), [air.hours]);
+  const sim = useMemo(
+    () =>
+      simulateIndoor24h({
+        home: profile.home,
+        outdoorPm25: outdoor,
+        windowStates: Array.from({ length: 24 }, () => "closed"),
+        cookingHours: [8, 20],
+      }),
+    [profile.home, outdoor],
+  );
+  const vent = useMemo(
+    () => findSmartVentilationWindow(profile.home, air.hours),
+    [profile.home, air.hours],
+  );
+  return { outdoor, sim, vent };
+}
+
+/** Interactive 24-hour indoor mass-balance simulator, smart airing window finder, CR box guide, and label scanner. */
 export function HomeLabView({
   profile,
   air,
@@ -31,14 +51,7 @@ export function HomeLabView({
   onUpdateHome: (patch: Partial<HouseholdProfile["home"]>) => void;
 }) {
   const locale = profile.locale;
-  const outdoor = air.hours.slice(0, 24).map((h) => h.pm25);
-  const sim = simulateIndoor24h({
-    home: profile.home,
-    outdoorPm25: outdoor,
-    windowStates: Array.from({ length: 24 }, () => "closed"),
-    cookingHours: [8, 20],
-  });
-  const vent = findSmartVentilationWindow(profile.home, air.hours);
+  const { outdoor, sim, vent } = useLabSimulation(profile, air);
   const ventText = vent.hasWindow
     ? `${t(locale, "lab.vent_found")} ${vent.startHour}:00 (${vent.durationMin} min, −${vent.estimatedDropPct}%)`
     : t(locale, "lab.vent_none");

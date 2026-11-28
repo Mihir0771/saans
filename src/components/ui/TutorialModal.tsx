@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import type { Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
+import { DialogFrame } from "./DialogFrame";
 import { Button } from "./Primitives";
 
 interface TutorialModalProps {
@@ -153,9 +154,9 @@ function TutorialHeader({
         <span className="inline-block rounded-pill bg-brand-soft px-2.5 py-0.5 text-xs font-bold text-brand-ink">
           {t(locale, "tutorial.badge")} · {step + 1}/{total}
         </span>
-        <h1 id="tutorial-title" className="mt-2 text-lg font-bold text-ink">
+        <h2 id="tutorial-title" className="mt-2 text-lg font-bold text-ink">
           {t(locale, "tutorial.welcome")}
-        </h1>
+        </h2>
       </div>
       <Button variant="ghost" onClick={onClose} aria-label={t(locale, "app.close")}>
         ✕
@@ -198,34 +199,26 @@ function TutorialStepCard({
 }
 
 export function TutorialModal(p: TutorialModalProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const [step, setStep] = useState(0);
   const [dontShow, setDontShow] = useState(false);
 
-  useEffect(() => {
-    const dlg = dialogRef.current;
-    if (!dlg) return;
-    if (p.open && !dlg.open) {
-      setStep(0);
-      dlg.showModal();
-    } else if (!p.open && dlg.open) {
-      dlg.close();
-    }
-  }, [p.open]);
+  const handleClose = () => {
+    setStep(0);
+    p.onClose(dontShow);
+  };
 
   return (
-    <dialog
-      ref={dialogRef}
-      {...({ closedby: "any" } as Record<string, string>)}
-      aria-labelledby="tutorial-title"
-      onClose={() => p.onClose(dontShow)}
+    <DialogFrame
+      open={p.open}
+      labelledBy="tutorial-title"
+      onClose={handleClose}
       className="m-auto w-[min(500px,calc(100vw-24px))] rounded-lg border border-divider bg-surface p-5 text-ink shadow-[var(--shadow-2)]"
     >
       <TutorialHeader
         step={step}
         total={STEP_KEYS.length}
         locale={p.locale}
-        onClose={() => p.onClose(dontShow)}
+        onClose={handleClose}
       />
       <TutorialStepCard
         step={step}
@@ -243,9 +236,12 @@ export function TutorialModal(p: TutorialModalProps) {
         onToggleDontShow={setDontShow}
         onPrev={() => setStep((s) => Math.max(0, s - 1))}
         onNext={() => setStep((s) => Math.min(STEP_KEYS.length - 1, s + 1))}
-        onWatchVideo={() => p.onPickWhat(dontShow)}
-        onSkip={() => p.onClose(dontShow)}
+        onWatchVideo={() => {
+          setStep(0);
+          p.onPickWhat(dontShow);
+        }}
+        onSkip={handleClose}
       />
-    </dialog>
+    </DialogFrame>
   );
 }

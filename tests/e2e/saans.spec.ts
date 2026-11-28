@@ -74,7 +74,7 @@ test.describe("Saans E2E user journeys", () => {
 
     // Switch to Hindi + Dark mode and verify zero overflow
     await page.getByRole("button", { name: "हिं" }).click();
-    await page.getByRole("button", { name: /Toggle theme/i }).click();
+    await page.getByRole("button", { name: /Toggle theme|थीम बदलें/i }).click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText(/पूछें/);
     const hiOverflow = await page.evaluate(
       () =>

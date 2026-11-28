@@ -15,10 +15,11 @@ function formatCardBadges(action: RankedAction, locale: Locale) {
     action.deltaRatio >= 0.1
       ? `${action.deltaRatio.toFixed(1)}×`
       : `${Math.round(action.deltaUg)} µg`;
-  const dose = `↓ ${delta} ${locale === "hi" ? "खुराक" : "dose"}`;
-  const zero = locale === "hi" ? "₹0 अतिरिक्त" : "₹0 extra";
+  const dose = `↓ ${delta} ${t(locale, "actions.doseUnit")}`;
   const cost =
-    action.costOneTimeInr > 0 ? `₹${action.costOneTimeInr.toLocaleString("en-IN")}` : zero;
+    action.costOneTimeInr > 0
+      ? `₹${action.costOneTimeInr.toLocaleString("en-IN")}`
+      : t(locale, "actions.zeroExtra");
   return { dose, cost };
 }
 
@@ -99,6 +100,7 @@ function WaterfallRow({
   delta,
   leftPct,
   widthPct,
+  offLabel,
   onToggle,
 }: {
   label: string;
@@ -106,6 +108,7 @@ function WaterfallRow({
   delta: number;
   leftPct: number;
   widthPct: number;
+  offLabel: string;
   onToggle: () => void;
 }) {
   return (
@@ -120,7 +123,7 @@ function WaterfallRow({
         <span
           className={`min-w-[5ch] text-right font-num font-extrabold ${isOn ? "text-save" : "text-ink-2"}`}
         >
-          {isOn ? `−${delta.toFixed(1)}×` : "off"}
+          {isOn ? `−${delta.toFixed(1)}×` : offLabel}
         </span>
       </div>
       <div className="relative h-[18px] rounded-[9px] bg-surface-2" aria-hidden="true">
@@ -164,6 +167,37 @@ function SummaryBarRow({
   );
 }
 
+function buildWaterfallRows(
+  waterfall: WaterfallAttribution,
+  allSteps: Array<{ id: string; titleKey: string; deltaRatio: number }>,
+  activeIds: string[],
+  onToggle: (id: string) => void,
+  locale: Locale,
+) {
+  const base = Math.max(waterfall.baselineRatio, 0.1);
+  let run = waterfall.baselineRatio;
+  return allSteps.map((item) => {
+    const isOn = activeIds.includes(item.id);
+    const stepDelta = waterfall.steps.find((s) => s.actionId === item.id)?.deltaRatio;
+    const d = isOn ? (stepDelta ?? item.deltaRatio) : 0;
+    const end = Math.max(0, run - d);
+    run = end;
+    return (
+      <WaterfallRow
+        key={item.id}
+        label={t(locale, item.titleKey)}
+        isOn={isOn}
+        delta={d}
+        leftPct={(end / base) * 100}
+        widthPct={(d / base) * 100}
+        offLabel={t(locale, "actions.off")}
+        onToggle={() => onToggle(item.id)}
+      />
+    );
+  });
+}
+
+/** Interactive Shapley waterfall comparison between typical day and Saans plan. */
 export function WaterfallList({
   waterfall,
   allSteps,
@@ -178,23 +212,7 @@ export function WaterfallList({
   locale: Locale;
 }) {
   const base = Math.max(waterfall.baselineRatio, 0.1);
-  let run = waterfall.baselineRatio;
-  const rows = allSteps.map((item) => {
-    const isOn = activeIds.includes(item.id);
-    const stepDelta = waterfall.steps.find((s) => s.actionId === item.id)?.deltaRatio;
-    const d = isOn ? (stepDelta ?? item.deltaRatio) : 0;
-    const end = Math.max(0, run - d);
-    run = end;
-    const props = {
-      label: t(locale, item.titleKey),
-      isOn,
-      delta: d,
-      leftPct: (end / base) * 100,
-      widthPct: (d / base) * 100,
-      onToggle: () => onToggle(item.id),
-    };
-    return <WaterfallRow key={item.id} {...props} />;
-  });
+  const rows = buildWaterfallRows(waterfall, allSteps, activeIds, onToggle, locale);
   const finalPct = Math.min(100, (waterfall.planRatio / base) * 100);
   return (
     <div className="grid gap-3">

@@ -42,6 +42,7 @@ function bucketPick(all: RankedAction[], bucket: ActionBucket): RankedAction[] {
   return all.filter((a) => a.bucket === bucket).slice(0, 3);
 }
 
+/** Ranks eligible, safety-filtered household actions by dose reduction per rupee and effort. */
 export function rankHouseholdActions(
   profile: HouseholdProfile,
   member: FamilyMember,

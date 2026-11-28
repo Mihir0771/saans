@@ -122,9 +122,10 @@ export function LabControls({
         ))}
       </div>
       <PurifierControls home={home} locale={locale} onUpdateHome={onUpdateHome} />
-      <label className="text-sm font-semibold text-ink">
+      <label htmlFor="lab-cooking-fuel" className="text-sm font-semibold text-ink">
         {t(locale, "lab.cookingFuel")}
         <select
+          id="lab-cooking-fuel"
           value={home.cookingFuel}
           onChange={(e) => onUpdateHome({ cookingFuel: e.target.value as CookingFuel })}
           className="mt-1 block min-h-[44px] w-full rounded-sm border border-line bg-surface px-3 text-ink"

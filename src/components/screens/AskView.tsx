@@ -15,6 +15,28 @@ interface ChatMsg {
   facts?: Record<string, FactItem>;
 }
 
+function bubbleMathDetail(facts: Record<string, FactItem> | undefined, locale: Locale): MathDetail {
+  return {
+    title: t(locale, "today.showMath"),
+    formula: "Engine FactSheet -> server slot substitution -> guard",
+    inputs: Object.values(facts ?? {})
+      .slice(0, 4)
+      .map((f) => `${f.id}: ${f.display}`),
+    source: "Deterministic pure-TS engine",
+    confidence: "B",
+  };
+}
+
+function copyBubbleText(text: string, setCopied: (v: boolean) => void) {
+  navigator.clipboard
+    ?.writeText(text)
+    .then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    })
+    .catch(() => setCopied(false));
+}
+
 function BubbleActions({
   m,
   locale,
@@ -26,17 +48,8 @@ function BubbleActions({
   onShowMath: (d: MathDetail) => void;
   onSpeak: (s: string) => void;
 }) {
+  const [copied, setCopied] = useState(false);
   const hasFacts = Boolean(m.facts && Object.keys(m.facts).length > 0);
-  const openMath = () =>
-    onShowMath({
-      title: t(locale, "today.showMath"),
-      formula: "Engine FactSheet -> server slot substitution -> guard",
-      inputs: Object.values(m.facts ?? {})
-        .slice(0, 4)
-        .map((f) => `${f.id}: ${f.display}`),
-      source: "Deterministic pure-TS engine",
-      confidence: "B",
-    });
   return (
     <div className="mt-2 flex flex-wrap items-center gap-2">
       <span className="inline-flex min-h-[28px] items-center rounded-pill bg-brand-soft px-3 text-xs font-bold text-brand-ink">
@@ -45,7 +58,7 @@ function BubbleActions({
       {hasFacts ? (
         <button
           type="button"
-          onClick={openMath}
+          onClick={() => onShowMath(bubbleMathDetail(m.facts, locale))}
           className="min-h-[44px] px-2 text-sm font-bold text-brand-ink underline underline-offset-4"
         >
           {t(locale, "today.showMath")}
@@ -57,6 +70,13 @@ function BubbleActions({
         className="min-h-[44px] px-2 text-xs font-semibold text-ink-2 underline"
       >
         {t(locale, "ask.readAloud")}
+      </button>
+      <button
+        type="button"
+        onClick={() => copyBubbleText(m.text, setCopied)}
+        className="min-h-[44px] px-2 text-xs font-semibold text-ink-2 underline"
+      >
+        {copied ? t(locale, "ask.copied") : t(locale, "ask.copy")}
       </button>
     </div>
   );

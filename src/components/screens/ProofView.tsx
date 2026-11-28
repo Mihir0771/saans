@@ -55,6 +55,17 @@ function AssumptionsCard({ locale }: { locale: Locale }) {
   );
 }
 
+function ReportCard({ locale, reportMd }: { locale: Locale; reportMd: string }) {
+  return (
+    <Card>
+      <h2 className="text-lg font-bold text-ink">{t(locale, "proof.reportTitle")}</h2>
+      <pre className="mt-2 whitespace-pre-wrap rounded-md bg-surface-2 p-3 text-xs text-ink-2">
+        {reportMd || t(locale, "proof.reportEmpty")}
+      </pre>
+    </Card>
+  );
+}
+
 function MythsAndReportColumn({ locale, reportMd }: { locale: Locale; reportMd: string }) {
   return (
     <div className="grid gap-4">
@@ -78,16 +89,41 @@ function MythsAndReportColumn({ locale, reportMd }: { locale: Locale; reportMd: 
           ))}
         </div>
       </Card>
-      <Card>
-        <h2 className="text-lg font-bold text-ink">{t(locale, "proof.reportTitle")}</h2>
-        <pre className="mt-2 whitespace-pre-wrap rounded-md bg-surface-2 p-3 text-xs text-ink-2">
-          {reportMd || "Run `npm run verify` to generate VERIFICATION_REPORT.md."}
-        </pre>
-      </Card>
+      <ReportCard locale={locale} reportMd={reportMd} />
     </div>
   );
 }
 
+function PrivacyDeleteCard({ locale, onDelete }: { locale: Locale; onDelete: () => void }) {
+  const [confirming, setConfirming] = useState(false);
+  return (
+    <Card>
+      <h2 className="text-lg font-bold text-ink">{t(locale, "proof.privacyTitle")}</h2>
+      <p className="mt-1 text-sm text-ink-2">{t(locale, "onboarding.subtitle")}</p>
+      {confirming ? (
+        <div className="mt-3 flex flex-wrap items-center gap-2" role="alert">
+          <span className="text-xs font-semibold text-ink">{t(locale, "app.resetConfirm")}</span>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setConfirming(false);
+              onDelete();
+            }}
+          >
+            {t(locale, "app.reset")}
+          </Button>
+          <Button onClick={() => setConfirming(false)}>{t(locale, "app.cancel")}</Button>
+        </div>
+      ) : (
+        <Button className="mt-3" onClick={() => setConfirming(true)}>
+          {t(locale, "app.reset")}
+        </Button>
+      )}
+    </Card>
+  );
+}
+
+/** Evidence registry, myth-busting cards, privacy data reset, and live repository verification report. */
 export function ProofView({
   locale,
   onDeleteAllData,
@@ -97,30 +133,21 @@ export function ProofView({
 }) {
   const [reportMd, setReportMd] = useState("");
   useEffect(() => {
-    fetch("/api/verify-report")
+    const controller = new AbortController();
+    fetch("/api/verify-report", { signal: controller.signal })
       .then((r) => r.json())
-      .then((d) => {
+      .then((d: { markdown?: string }) => {
         if (d.markdown) setReportMd(d.markdown);
       })
       .catch(() => undefined);
+    return () => controller.abort();
   }, []);
 
   return (
     <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
       <div className="grid gap-4">
         <AssumptionsCard locale={locale} />
-        <Card>
-          <h2 className="text-lg font-bold text-ink">{t(locale, "proof.privacyTitle")}</h2>
-          <p className="mt-1 text-sm text-ink-2">{t(locale, "onboarding.subtitle")}</p>
-          <Button
-            className="mt-3"
-            onClick={() => {
-              if (window.confirm(t(locale, "app.resetConfirm"))) onDeleteAllData();
-            }}
-          >
-            {t(locale, "app.reset")}
-          </Button>
-        </Card>
+        <PrivacyDeleteCard locale={locale} onDelete={onDeleteAllData} />
       </div>
       <MythsAndReportColumn locale={locale} reportMd={reportMd} />
     </div>

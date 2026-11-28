@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { HouseholdProfile, Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
 import { clearUserGeminiKey, loadUserGeminiKey, saveUserGeminiKey } from "@/lib/storage";
@@ -221,6 +221,7 @@ function CitySetupCard(p: {
 
 export function OnboardingView(p: OnboardingProps) {
   const locale = p.profile.locale;
+  const searchSeqRef = useRef(0);
   const [cityQuery, setCityQuery] = useState(p.profile.cityName);
   const [matches, setMatches] = useState<CityMatch[]>([]);
   const [searchNote, setSearchNote] = useState<string | null>(null);
@@ -236,7 +237,10 @@ export function OnboardingView(p: OnboardingProps) {
     setSearchNote(null);
   };
   const runSearch = async () => {
+    const seq = ++searchSeqRef.current;
+    setSearchNote(t(locale, "onboarding.searching"));
     const out = await fetchCityMatches(cityQuery, locale);
+    if (seq !== searchSeqRef.current) return;
     setMatches(out.results);
     setSearchNote(out.note);
   };

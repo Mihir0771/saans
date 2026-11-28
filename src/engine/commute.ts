@@ -51,6 +51,7 @@ function computeTripDose(
   };
 }
 
+/** Compares daily inhaled PM2.5 dose, CO₂e, rupee cost, and duration across all commute modes. */
 export function compareCommutes(input: CompareCommutesInput): CommuteComparison[] {
   const departIdx = ((input.departHour % 24) + 24) % 24;
   const returnIdx = (departIdx + 8) % 24;

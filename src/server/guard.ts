@@ -52,6 +52,10 @@ function stripAllowedNumberTokens(text: string): string {
   return out;
 }
 
+/**
+ * Verifies AI-generated prose against `factSheet`: resolves `{{fact:id}}` slots,
+ * rejects unslotted numbers, unknown slots, or banned safety advice (§6.5).
+ */
 export function runNumberGuard(rawText: string, factSheet: FactSheet): GuardResult {
   const trimmed = rawText.trim();
   if (!trimmed) {

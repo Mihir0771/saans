@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { computeFullPlan } from "@/engine/plan";
 import { AirBundleSchema, HouseholdProfileSchema, LocaleSchema } from "@/engine/schema";
 import { resolveDemoInputs } from "@/lib/ahmedabad-fixture";
 import { generateGuardedExplain } from "@/server/ai-service";
 import { extractUserGeminiKey } from "@/server/gemini";
-import { checkRateLimit, clientIpFromHeaders } from "@/server/ratelimit";
+import { enforceRouteRateLimit, jsonNoStore, parseJsonRequest } from "@/server/http";
 
 const ExplainRequestSchema = z.object({
   demo: z.enum(["sharma", "ahmedabad"]).optional(),
@@ -15,27 +15,21 @@ const ExplainRequestSchema = z.object({
   focusMemberId: z.string().max(32).optional(),
 });
 
-function resolveInputs(d: z.infer<typeof ExplainRequestSchema>) {
+/**
+ * Generates structured, FactSheet-grounded plan narration via Gemini with `guard.ts` verification.
+ */
+export async function POST(req: NextRequest) {
+  const blocked = enforceRouteRateLimit(req, "explain", 30);
+  if (blocked) return blocked;
+
+  const parsed = await parseJsonRequest(req, ExplainRequestSchema, "Invalid explain request");
+  if (!parsed.ok) return parsed.response;
+
+  const d = parsed.data;
   const resolved = resolveDemoInputs(d.demo, d.profile, d.air);
   const profile = { ...resolved.profile, locale: d.locale };
-  const air = resolved.air;
   const focusId = d.focusMemberId ?? profile.members[0]?.id ?? "aarav";
-  return { profile, air, focusId };
-}
-
-export async function POST(req: NextRequest) {
-  const ip = clientIpFromHeaders(req.headers);
-  if (!checkRateLimit(`explain:${ip}`, 30)) {
-    return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
-  }
-
-  const parsed = ExplainRequestSchema.safeParse(await req.json().catch(() => null));
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid explain request" }, { status: 400 });
-  }
-
-  const { profile, air, focusId } = resolveInputs(parsed.data);
-  const full = computeFullPlan(profile, air, focusId);
+  const full = computeFullPlan(profile, resolved.air, focusId);
   const eligible = full.memberPlans[focusId]?.activeActionIds ?? [];
   const explained = await generateGuardedExplain(
     full.factSheet,
@@ -43,5 +37,5 @@ export async function POST(req: NextRequest) {
     undefined,
     extractUserGeminiKey(req.headers),
   );
-  return NextResponse.json({ ...explained, factSheet: full.factSheet });
+  return jsonNoStore({ ...explained, factSheet: full.factSheet });
 }

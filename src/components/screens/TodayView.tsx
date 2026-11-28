@@ -27,17 +27,19 @@ function formatFetchedTime(iso: string, locale: Locale): string {
 function MemberSwitcher({
   members,
   activeId,
+  locale,
   onSelect,
 }: {
   members: FamilyMember[];
   activeId: string;
+  locale: Locale;
   onSelect: (id: string) => void;
 }) {
   return (
     <div
       className="mt-3 flex min-w-0 max-w-full gap-2 overflow-x-auto pb-1"
       role="group"
-      aria-label="Family member"
+      aria-label={t(locale, "today.memberGroup")}
     >
       {members.map((m) => (
         <button
@@ -143,7 +145,12 @@ function TodayBudgetCard({
       <h1 id="bb-heading" className="mt-1 text-lg font-bold leading-tight text-ink">
         {t(locale, "today.title")}
       </h1>
-      <MemberSwitcher members={members} activeId={focusMember.id} onSelect={onSelectMember} />
+      <MemberSwitcher
+        members={members}
+        activeId={focusMember.id}
+        locale={locale}
+        onSelect={onSelectMember}
+      />
       <BreathGauge
         memberName={focusMember.name}
         typicalRatio={mPlan.waterfall.baselineRatio}

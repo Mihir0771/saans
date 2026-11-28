@@ -5,7 +5,7 @@ import { steadyStateIndoorPm } from "@/engine/indoor";
 import { computeMemberExposure } from "@/engine/exposure";
 import { sanitizeUserText } from "@/server/guard";
 import { createGeminiClient, extractUserGeminiKey } from "@/server/gemini";
-import { checkRateLimit, resetRateLimits } from "@/server/ratelimit";
+import { checkRateLimit, MAX_RATE_LIMIT_BUCKETS, resetRateLimits } from "@/server/ratelimit";
 import { detectImageMime, MAX_IMAGE_BYTES } from "@/server/vision";
 import { SHARMA_DEMO_AIR, SHARMA_PROFILE } from "@/lib/sharma-fixture";
 
@@ -28,10 +28,13 @@ describe("Security headers, rate limits & hand-computed engine sanity", () => {
     expect(detectImageMime(new Uint8Array([0, 1, 2]))).toBeNull();
   });
 
-  it("sanitizes XSS/control chars and enforces rate-limit ceiling", () => {
+  it("sanitizes XSS/control chars, enforces rate-limit ceiling, and bounds bucket memory", () => {
     resetRateLimits();
     for (let i = 0; i < 20; i += 1) expect(checkRateLimit("sec:ip", 20)).toBe(true);
     expect(checkRateLimit("sec:ip", 20)).toBe(false);
+    for (let i = 0; i < MAX_RATE_LIMIT_BUCKETS + 5; i += 1) {
+      expect(checkRateLimit(`flood:${i}`, 5)).toBe(true);
+    }
     const cleaned = sanitizeUserText("<script>alert(1)</script>\u0000", 500);
     expect(cleaned).not.toContain("\u0000");
   });

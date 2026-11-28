@@ -5,8 +5,8 @@ import { roundTo2Dp } from "@/engine/units";
 import { AHMEDABAD_DEMO_AIR } from "@/lib/ahmedabad-fixture";
 import { SHARMA_DEMO_AIR } from "@/lib/sharma-fixture";
 import { LruCache } from "@/server/cache";
+import { apiError, enforceRouteRateLimit, jsonNoStore } from "@/server/http";
 import { applyCalibrationAndSim, fetchOpenMeteoBundle, geocodeCity } from "@/server/openmeteo";
-import { checkRateLimit, clientIpFromHeaders } from "@/server/ratelimit";
 
 const airCache = new LruCache<AirBundle>(128, 15 * 60 * 1000);
 
@@ -44,25 +44,28 @@ async function loadBaseAir(q: z.infer<typeof QuerySchema>): Promise<AirBundle> {
   }
 }
 
+/**
+ * Serves live Open-Meteo CAMS forecasts (cached 15 min per 2 d.p. cell),
+ * geocoding results, demo scenarios, or user monitor calibrations.
+ */
 export async function GET(req: NextRequest) {
-  const ip = clientIpFromHeaders(req.headers);
-  if (!checkRateLimit(`air:${ip}`, 60)) {
-    return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
-  }
+  const blocked = enforceRouteRateLimit(req, "air", 60);
+  if (blocked) return blocked;
+
   const parsed = QuerySchema.safeParse(Object.fromEntries(req.nextUrl.searchParams.entries()));
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid query parameters" }, { status: 400 });
-  }
+  if (!parsed.success) return apiError("Invalid query parameters", 400);
+
   const q = parsed.data;
   if (q.q) {
     const matches = await geocodeCity(q.q).catch(() => []);
-    return NextResponse.json({ results: matches });
+    return jsonNoStore({ results: matches });
   }
   if (q.demo === "sharma" || q.demo === "ahmedabad") {
     const demoAir = q.demo === "ahmedabad" ? AHMEDABAD_DEMO_AIR : SHARMA_DEMO_AIR;
-    return NextResponse.json(applyCalibrationAndSim(demoAir, q.calibratePm25, q.simMean));
+    return jsonNoStore(applyCalibrationAndSim(demoAir, q.calibratePm25, q.simMean));
   }
   const out = applyCalibrationAndSim(await loadBaseAir(q), q.calibratePm25, q.simMean);
+  if (out.stale || out.source === "offline-sample") return jsonNoStore(out);
   return NextResponse.json(out, {
     headers: { "Cache-Control": "s-maxage=900, stale-while-revalidate=3600" },
   });

@@ -82,6 +82,7 @@ function computeCommutesForMember(
   };
 }
 
+/** Computes baseline vs. Saans daily dose, Shapley waterfall, and ranked actions for one member. */
 export function computeMemberPlan(
   profile: HouseholdProfile,
   memberId: string,

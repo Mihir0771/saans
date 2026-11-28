@@ -55,6 +55,10 @@ function marginalShapleyStep(
   };
 }
 
+/**
+ * Computes exact Shapley marginal attributions across up to 6 active interventions
+ * so per-action dose savings sum strictly to `(baselineRatio - planRatio)`.
+ */
 export function computeShapleyWaterfall(input: {
   member: FamilyMember;
   home: HomeProfile;

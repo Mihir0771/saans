@@ -102,12 +102,13 @@ export function StatTile({
   );
 }
 
-export function SkeletonCard() {
+/** Animated placeholder block shown while air data loads. */
+export function SkeletonCard({ label = "Loading" }: { label?: string }) {
   return (
     <div
       className="rounded-lg border border-divider bg-surface p-4"
       aria-busy="true"
-      aria-label="Loading"
+      aria-label={label}
     >
       <div className="h-4 w-28 rounded bg-surface-2" />
       <div className="mt-3 h-24 w-full rounded-md bg-surface-2" />

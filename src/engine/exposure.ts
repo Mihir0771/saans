@@ -179,6 +179,7 @@ function slotConc(
   return hourAir.pm25;
 }
 
+/** Integrates a member's 24-hour inhaled PM2.5 dose (µg and × WHO guideline multiple). */
 export function computeMemberExposure(input: ExposureInput): MemberDoseResult {
   const adapted = applyActionsToSim(
     input.home,

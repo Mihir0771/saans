@@ -20,7 +20,7 @@ test.describe("WCAG 2.2 AA Accessibility audits", () => {
     await page.getByRole("button", { name: /Close/i }).click();
     await assertClean("Today EN Light");
     await page.getByRole("button", { name: "हिं" }).click();
-    await page.getByRole("button", { name: /Toggle theme/i }).click();
+    await page.getByRole("button", { name: /Toggle theme|थीम बदलें/i }).click();
     await assertClean("Today HI Dark");
 
     await page.getByRole("button", { name: /योजना/ }).first().click();

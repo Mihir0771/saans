@@ -91,7 +91,7 @@ export function SidebarNav({
       <div className="px-2 pb-4">
         <BrandLogo />
       </div>
-      <nav aria-label="Primary" className="grid gap-1">
+      <nav aria-label={t(locale, "nav.primary")} className="grid gap-1">
         {[...PRIMARY_IDS, "what", "community", "proof", "onboarding"].map((id) => {
           const tabId = id as AppTab;
           const cls =
@@ -125,7 +125,7 @@ export function MobileBottomNav({
 }) {
   return (
     <nav
-      aria-label="Primary mobile"
+      aria-label={t(locale, "nav.mobile")}
       className="no-print fixed inset-x-0 bottom-0 z-30 grid h-[calc(var(--nav-h)+env(safe-area-inset-bottom))] grid-cols-4 border-t border-divider bg-surface pb-[env(safe-area-inset-bottom)] md:hidden"
     >
       {PRIMARY_IDS.map((id) => {
@@ -164,7 +164,7 @@ function LangSwitch({
     <div
       className="inline-flex overflow-hidden rounded-pill border border-line bg-surface"
       role="group"
-      aria-label="Language"
+      aria-label={t(locale, "nav.language")}
     >
       <button
         type="button"
@@ -207,7 +207,7 @@ export function TopControls({
       <button
         type="button"
         onClick={() => onChangeTheme(theme === "dark" ? "light" : "dark")}
-        aria-label="Toggle theme"
+        aria-label={t(locale, "app.toggleTheme")}
         className="min-h-[44px] cursor-pointer rounded-pill border border-line bg-surface px-3 text-sm font-semibold text-ink"
       >
         {theme === "dark" ? "☀" : "☾"}

@@ -184,7 +184,11 @@ function QuickCityBar({
       <h2 id="air-now-heading" className="text-lg font-bold text-ink">
         {t(locale, "today.airNow")}
       </h2>
-      <div className="flex items-center gap-1.5" role="group" aria-label="Quick city switch">
+      <div
+        className="flex items-center gap-1.5"
+        role="group"
+        aria-label={t(locale, "today.quickCityGroup")}
+      >
         <Button
           aria-pressed={source === "demo-sharma"}
           onClick={onDelhi}

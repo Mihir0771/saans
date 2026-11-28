@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { Locale } from "@/engine/schema";
 import { t } from "@/lib/i18n";
+import { pointerRatioInSvg } from "@/lib/svg-pointer";
 import { CumulativeTable, DoseLegend, DoseScrubReadout } from "./CumulativeDoseExtras";
 
 function AxisGrid({
@@ -116,10 +117,7 @@ function CumulativePlot({
 }
 
 function hourFromPointer(e: React.PointerEvent<SVGSVGElement>): number {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const svgX = ((e.clientX - rect.left) / rect.width) * 336;
-  const clamped = Math.max(34, Math.min(326, svgX));
-  return Math.round(((clamped - 34) / 292) * 24);
+  return Math.round(pointerRatioInSvg(e, 336, 34, 326) * 24);
 }
 
 function DoseScrubber({

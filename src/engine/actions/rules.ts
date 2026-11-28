@@ -52,6 +52,10 @@ function collectMemberFlags(
   }
 }
 
+/**
+ * Evaluates non-negotiable §6.5 safety rules (ozone/ionizer block, combustion sealing block,
+ * under-2 mask block, vigorous outdoor caution, medical disclaimer) and returns blocked action IDs.
+ */
 export function evaluateSafetyRules(
   profile: HouseholdProfile,
   aqiNow: CpcbAqiResult,

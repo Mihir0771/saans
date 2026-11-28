@@ -36,6 +36,7 @@ export interface IndoorTrajectory {
 
 type BoundCase = "low" | "central" | "high";
 
+/** Analytic closed-form steady-state indoor PM2.5 concentration (µg/m³). */
 export function steadyStateIndoorPm(input: SteadyStateInput): number {
   const aPurifier = input.cadrEffM3h / Math.max(input.volumeM3, 1);
   const denom = Math.max(input.lambdaAch + input.depositionK + aPurifier, 1e-6);

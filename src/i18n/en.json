@@ -11,7 +11,9 @@
     "resetConfirm": "Delete all saved family & home data from this browser?",
     "themeLight": "Light",
     "themeDark": "Dark",
-    "themeSystem": "System"
+    "themeSystem": "System",
+    "loading": "Loading",
+    "toggleTheme": "Toggle theme"
   },
   "nav": {
     "today": "Today",
@@ -21,7 +23,10 @@
     "what": "What is this?",
     "community": "Community",
     "proof": "Proof & Myths",
-    "onboarding": "Setup"
+    "onboarding": "Setup",
+    "primary": "Primary navigation",
+    "mobile": "Mobile navigation",
+    "language": "Language"
   },
   "banners": {
     "labelDemo": "Demo.",
@@ -88,7 +93,9 @@
     "temp": "Temp",
     "mixing": "Mixing",
     "quickDelhi": "Delhi",
-    "quickAhmedabad": "Ahmedabad"
+    "quickAhmedabad": "Ahmedabad",
+    "memberGroup": "Family member",
+    "quickCityGroup": "Quick city switch"
   },
   "plan": {
     "eyebrow": "Day Replay",
@@ -148,9 +155,9 @@
     "rateLimited": "Too many messages right now — please wait a minute and try again.",
     "placeholder": "Ask about today's air…",
     "send": "Send",
-    "speak": "Speak",
     "readAloud": "Read aloud",
     "copy": "Copy",
+    "copied": "Copied!",
     "trust": "Gemini writes the words; the engine supplies every number. Not medical advice.",
     "sug1": "Is a purifier worth it for one room?",
     "sug2": "Can Aarav play outside at 2 pm?",
@@ -198,9 +205,13 @@
     "searchAssumptions": "Filter assumptions…",
     "mythsTitle": "Myth or Fact",
     "reportTitle": "Repo Verification Report",
+    "reportEmpty": "Verification report is not bundled in this view.",
     "privacyTitle": "Privacy & Data Control"
   },
   "actions": {
+    "doseUnit": "dose",
+    "zeroExtra": "₹0 extra",
+    "off": "off",
     "cr_box": {
       "title": "Run a DIY Corsi-Rosenthal box filter in the bedroom",
       "why": "Biggest single saving during 8–10 hours of sleep at home."
@@ -247,6 +258,7 @@
     "subtitle": "Everything stays in your browser. No account required.",
     "cityLabel": "Search your city",
     "search": "Search",
+    "searching": "Searching…",
     "cityEmpty": "No matching cities found — try another spelling.",
     "cityError": "City search temporarily unavailable.",
     "useSharma": "Try the Sharma family (Delhi smog day)",
@@ -302,6 +314,7 @@
     "tryDelhiBtn": "Try Delhi Demo",
     "tryAhmBtn": "Try Ahmedabad Demo",
     "tryAskBtn": "Open Ask Saans",
-    "trySetupBtn": "Configure City / Key"
+    "trySetupBtn": "Configure City / Key",
+    "chaptersGroup": "Walkthrough chapters"
   }
 }
